@@ -1,4 +1,14 @@
 {
+    "models": [
+        {
+            "name": "text-davinci-003",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "google/flan-t5-large",
+            "resource": "https://huggingface.co/google/flan-t5-large"
+        }
+    ],
     "tasks": [
         {
             "name": "sentiment detection",

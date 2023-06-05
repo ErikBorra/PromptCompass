@@ -2,3 +2,9 @@ streamlit
 python_dotenv
 langchain
 openai
+
+transformers
+torch
+accelerate 
+bitsandbytes
+scipy

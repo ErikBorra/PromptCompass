@@ -7,6 +7,9 @@ from langchain.llms import OpenAI  # import OpenAI model
 from langchain.chat_models import ChatOpenAI  # import OpenAI chat model
 from langchain.callbacks import get_openai_callback  # import OpenAI callbacks
 from langchain.prompts import PromptTemplate  # import PromptTemplate
+from langchain.llms import HuggingFacePipeline  # import HuggingFacePipeline
+import torch # import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoModelForSeq2SeqLM # import transformers
 
 
 def main():
@@ -20,16 +23,19 @@ def main():
         "A Tool for Navigating Prompts for Computational Social Science and Digital Humanities")
 
     # create input area for task selection
-    selections = {}
     tasks_with_names = [task for task in data['tasks'] if task['name']]
     task = st.selectbox('Select a task', tasks_with_names,
                         format_func=lambda x: x['name'] + " - " + x['authors'])
-    selections['task'] = task
 
     # Create input areas for prompts and user input
     input_values = {}
 
     if task:
+        # create input area for model selection
+        model_with_names = [model for model in data['models'] if model['name']]
+        input_values['model'] = st.selectbox('Select a model', model_with_names, 
+                        format_func=lambda x: x['name'])
+
         # concatenate all strings from prompt array
         prompt = '\n'.join(task['prompt'])
 
@@ -44,6 +50,7 @@ def main():
     # Submit button
     submit_button = st.button('Submit')
     st.write('---')  # Add a horizontal line
+    st.write("Using model " + input_values['model']['name'])
 
     # Process form submission
     if submit_button:
@@ -71,24 +78,39 @@ def main():
                     else:
                         template = input_values['prompt']
 
-                    # run LLMChain
-                    with get_openai_callback() as cb:
-                        llm = OpenAI(temperature=0, model='text-davinci-003',
-                                     max_tokens=1024, openai_api_key=os.getenv("OPENAI_API_KEY"))
+                    # create prompt template
+                    prompt_template = PromptTemplate(
+                                input_variables=["user_input"], template=template)
+                    
+                    # run the model
+                    if input_values['model']['name'] == 'text-davinci-003':
+                        with get_openai_callback() as cb:
+                            llm = OpenAI(temperature=0, model=input_values['model']['name'],
+                                        max_tokens=1024, openai_api_key=os.getenv("OPENAI_API_KEY"))
+                            
+                            question_chain = LLMChain(
+                                llm=llm, prompt=prompt_template)
+                            st.success("Input:  "+user_input + "  \n " +
+                                    "Output: "+question_chain.run(user_input))
+                            st.text(cb)
+                    elif input_values['model']['name'] == 'google/flan-t5-large':
+                        model_id = 'google/flan-t5-large'# go for a smaller model if you dont have the VRAM
+                        tokenizer = AutoTokenizer.from_pretrained(model_id)
+                        model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto')
 
-                        # llm = OpenAIChat(temperature=0, model='gpt-3.5-turbo',
-                        #                 max_tokens=1024, openai_api_key=os.getenv("OPENAI_API_KEY"))
+                        pipe = pipeline(
+                            "text2text-generation",
+                            model=model, 
+                            tokenizer=tokenizer, 
+                            max_length=100
+                        )
 
-                        prompt_template = PromptTemplate(
-                            input_variables=["user_input"], template=template)
-
-                        question_chain = LLMChain(
-                            llm=llm, prompt=prompt_template)
-
+                        local_llm = HuggingFacePipeline(pipeline=pipe)
+                        llm_chain = LLMChain(
+                            llm=local_llm, prompt=prompt_template, verbose=True)
+                        
                         st.success("Input:  "+user_input + "  \n " +
-                                   "Output: "+question_chain.run(user_input))
-                        st.text(cb)
-
+                                "Output: "+llm_chain.run(user_input))
 
 if __name__ == "__main__":
     main()
