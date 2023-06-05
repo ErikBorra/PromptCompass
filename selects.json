@@ -1,0 +1,187 @@
+{
+    "tasks": [
+        {
+            "name": "sentiment detection",
+            "prompt": [
+                "System prompt: You are an advanced classifying AI. You are tasked with classifying the sentiment of a text. Sentiment can be either positive , negative or neutral.",
+                "",
+                "Prompt: Classify the following social media comment into either 'negative', 'neutral' or 'positive'. Your answer MUST be either one of ['negative', 'neutral', 'positive']. Your answer must be lowercase.",
+                "",
+                "Text: {user_input}",
+                "",
+                "Answer:"
+            ],
+            "authors": "Møller et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2304.13861",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "social dimensions",
+            "prompt": [
+                "System prompt: You are an advanced classifying AI. You are tasked with classifying the social dimension of a text. The social dimensions are: social support, conflict, trust, neutral, fun, respect, knowledge, power, and similarity/identity.",
+                "",
+                "Prompt: Based on the following social media text, classify the social dimension of the text. You answer MUST only be one of the social dimensions. Your answer MUST be exactly one of ['social_support', 'conflict', 'trust', 'neutral', 'fun', 'respect', 'knowledge', 'power', 'similarity_identity']. The answer must be lowercase.",
+                "",
+                "Text: {user_input}",
+                "",
+                "Answer:"
+            ],
+            "authors": "Møller et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2304.13861",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "hate speech",
+            "prompt": [
+                "System prompt: You are an advanced classifying AI. You are tasked with classifying whether a text is offensive or not.",
+                "",
+                "Prompt: The following is a comment on a social media post. Classify whether the post is offensive (OFF) or not (NOT). Your answer must be one of ['OFF', 'NOT'].",
+                "",
+                "Text: {user_input}",
+                "",
+                "Answer:"
+            ],
+            "authors": "Møller et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2304.13861",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "named entity classification",
+            "prompt": [
+                "System prompt: You are a named entity recognition expert. You only answer in lowercase. You only classify names as 'company' or 'person'.",
+                "",
+                "Examples:",
+                "google: company",
+                "john smith: person",
+                "openai: company",
+                "pedro tabacof: person",
+                "",
+                "Classify the following names into company or person:"
+            ],
+            "authors": "Tabacof (2023)",
+            "doi": "https://tabacof.github.io/posts/name_classification/name_classification.html",
+            "location_of_input": "after"
+        },
+        {
+            "name": "annotate political Twitter messages",
+            "prompt": [
+                "You will be given a set of Twitter posts from different US politicians, sent during the two months preceding the 2020 US presidential election, that is, between September 3rd, 2020, and November 3rd, 2020. Your task is to use your knowledge of US politics to make an educated guess on whether the poster is a Democrat or Republican. Respond either ‘Democrat’ or ‘Republican’. If the message does not have enough information for an educated guess, just make your best guess."
+            ],
+            "authors": "Törnberg (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2304.06588",
+            "location_of_input": "after"
+        },
+        {
+            "name": "discourse acts",
+            "authors": "Ziems et al. (2023)",
+            "prompt": [
+                "Which of the following best characterizes the discourse type of the previous statement?",
+                "",
+                "A: Question",
+                "B: Answer",
+                "C: Agreement",
+                "D: Disagreement",
+                "E: Appreciation",
+                "F: Elaboration",
+                "G: Humor",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "latent hatred",
+            "prompt": [
+                "Which of the following categories of hate speech best describes the sentence above?",
+                "",
+                "A: White Grievance (frustration over a minority group's perceived privilege and casting majority groups as the real victims of racism)",
+                "B: Incitement to Violence (flaunting in−group unity and power or elevating known hate groups and ideologies)",
+                "C: Inferiority Language (implies one group or individual is inferior to another, including dehumanization and toxification)",
+                "D: Irony (the use of sarcasm, humor, and satire to attack or demean a protected class or individual)",
+                "E: Stereotypes and Misinformation (associating a protected class with negative attributes)",
+                "F: Threatening and Intimidation (conveys a speaker commitment to a target's pain, injury, damage, loss, or violation of rights)",
+                "",
+                "Constraint: Answer with one or more of the options above that is most accurate and nothing else. Always choose at least one of the options."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "misinformation detection",
+            "prompt": [
+                "Which of the following describes the above news headline?",
+                "",
+                "A: Misinformation",
+                "B: Trustworthy",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "stance detection",
+            "prompt": [
+                "If a political scientist considered the above sentence, which stance would she say it held towards Donald Trump?",
+                "",
+                "A: Against",
+                "B: Favor",
+                "C: None",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "character tropes",
+            "prompt": [
+                "Given quotes from the character above, which of the following tropes would you say this character represents?",
+                "",
+                "A: Absent Minded Professor",
+                "B: Adventurer Archaeologist",
+                "C: Arrogant Kungfu Guy",
+                "D: Big Man On Campus",
+                "E: Bounty Hunter",
+                "F: Brainless Beauty",
+                "G: Broken Bird",
+                "H: Bromantic Foil",
+                "I : Bruiser With A Soft Center",
+                "J : Bully",
+                "K: Byronic Hero",
+                "L: Casanova",
+                "M: Chanteuse",
+                "N: Charmer",
+                "O: Child Prodigy",
+                "P: Classy Cat Burglar"
+            ],
+            "authors": "Ziems et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "genre classification",
+            "prompt": [
+                "Please classify the following text according to genre (defined by function of the text, author’s purpose and form of the text) and explain your decision. You can choose from the following classes: News, Legal, Promotion, Opinion/Argumentation, Instruction, Information/Explanation, Prose/Lyrical, Forum, Other.",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else.",
+                "",
+                "The text to classify:"
+            ],
+            "authors": "Kuzman et al. (2023)",
+            "doi": "https://doi.org/10.48550/arXiv.2303.03953",
+            "location_of_input": "after"
+        },
+        {
+            "name": "",
+            "prompt": [],
+            "authors": "",
+            "doi": "https://doi.org/",
+            "location_of_input": "replace"
+        }
+    ]
+}
