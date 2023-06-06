@@ -17,6 +17,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoMode
 def main():
 
     pipe = None
+    open_ai_key = None
 
     # import css tasks and prompts
     with open('prompts.json') as f:
@@ -44,6 +45,14 @@ def main():
         # create input area for model selection
         input_values['model'] = st.selectbox('Select a model', model_with_names, 
                         format_func=lambda x: x['name'])
+        
+        # ask for open ai key if no key is set in .env
+        if input_values['model']['name'] == "text-davinci-003":
+            # Load the OpenAI API key from the environment variable
+            if os.getenv("OPENAI_API_KEY") is None or os.getenv("OPENAI_API_KEY") == "":
+                open_ai_key = st.text_input("Open AI API Key", "")
+            else:
+                open_ai_key = os.getenv("OPENAI_API_KEY")
 
         # concatenate all strings from prompt array
         prompt = '\n'.join(task['prompt'])
@@ -68,11 +77,6 @@ def main():
 
             start_time = time.time()
             st.write("Start time: " + time.strftime("%H:%M:%S", time.localtime()))
-
-            # Load the OpenAI API key from the environment variable
-            if os.getenv("OPENAI_API_KEY") is None or os.getenv("OPENAI_API_KEY") == "":
-                st.error("OPENAI_API_KEY is not set")
-                exit(1)
             
             # if model has changed, free up memory of the previous one
             if input_values['model']['name'] != st.session_state.get('previous_model'):
@@ -109,9 +113,12 @@ def main():
                     # set up and run the model
                     model_id = input_values['model']['name']
                     if model_id == 'text-davinci-003':
+                        if open_ai_key is None or open_ai_key == "":
+                            st.error("Please provide an Open AI API Key")
+                            exit(1)
                         with get_openai_callback() as cb:
                             llm = OpenAI(temperature=0, model=model_id,
-                                        max_tokens=1024, openai_api_key=os.getenv("OPENAI_API_KEY"))
+                                        max_tokens=1024, openai_api_key=open_ai_key)
                             
                             llm_chain = LLMChain(
                                 llm=llm, prompt=prompt_template)
