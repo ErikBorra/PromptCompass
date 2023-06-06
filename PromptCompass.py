@@ -73,7 +73,7 @@ def main():
             if input_values['prompt'] and input_values['user']:
 
                 # create dataframe for output
-                df = pd.DataFrame(columns=['input', 'output','model','task','prompt'])
+                df = pd.DataFrame(columns=['input', 'output','model','task','authors','prompt'])
 
                 # split user input into array
                 input_values['user'] = input_values['user'].split('\n')
@@ -141,8 +141,9 @@ def main():
                                 'input': user_input,
                                 'output': output,
                                 'model': model_id,
-                                'task': task['name'], # todo: add authors / paper
-                                'prompt': prompt_template # todo: prompt, rather than template
+                                'task': task['name'], 
+                                'authors': task['authors'],
+                                'prompt': template
                             }
                     df.loc[len(df.index)] = new_row
 
