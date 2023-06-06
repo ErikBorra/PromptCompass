@@ -59,7 +59,7 @@ def main():
     # Submit button
     submit_button = st.button('Submit')
     st.write('---')  # Add a horizontal line
-    st.write("Using model " + input_values['model']['name'])
+    st.write("Using model [" + input_values['model']['name']+"]("+input_values['model']['resource']+")")
 
     # Process form submission
     if submit_button:
