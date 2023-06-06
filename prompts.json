@@ -187,6 +187,19 @@
             "location_of_input": "after"
         },
         {
+            "name": "custom",
+            "prompt": [
+                "Prompt: YOUR PROMPT HERE",
+                "",
+                "Text: {user_input}",
+                "",
+                "Answer:"
+            ],
+            "authors": "user",
+            "paper": "",
+            "location_of_input": "replace"
+        },
+        {
             "name": "",
             "prompt": [],
             "authors": "",
