@@ -1,12 +1,12 @@
 {
     "models": [
         {
-            "name": "text-davinci-003",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
-        },
-        {
             "name": "google/flan-t5-large",
             "resource": "https://huggingface.co/google/flan-t5-large"
+        },
+        {
+            "name": "text-davinci-003",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
         }
     ],
     "tasks": [
@@ -22,7 +22,7 @@
                 "Answer:"
             ],
             "authors": "Møller et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2304.13861",
+            "paper": "https://doi.org/10.48550/arXiv.2304.13861",
             "location_of_input": "replace"
         },
         {
@@ -37,7 +37,7 @@
                 "Answer:"
             ],
             "authors": "Møller et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2304.13861",
+            "paper": "https://doi.org/10.48550/arXiv.2304.13861",
             "location_of_input": "replace"
         },
         {
@@ -52,7 +52,7 @@
                 "Answer:"
             ],
             "authors": "Møller et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2304.13861",
+            "paper": "https://doi.org/10.48550/arXiv.2304.13861",
             "location_of_input": "replace"
         },
         {
@@ -69,7 +69,7 @@
                 "Classify the following names into company or person:"
             ],
             "authors": "Tabacof (2023)",
-            "doi": "https://tabacof.github.io/posts/name_classification/name_classification.html",
+            "paper": "https://tabacof.github.io/posts/name_classification/name_classification.html",
             "location_of_input": "after"
         },
         {
@@ -78,7 +78,7 @@
                 "You will be given a set of Twitter posts from different US politicians, sent during the two months preceding the 2020 US presidential election, that is, between September 3rd, 2020, and November 3rd, 2020. Your task is to use your knowledge of US politics to make an educated guess on whether the poster is a Democrat or Republican. Respond either ‘Democrat’ or ‘Republican’. If the message does not have enough information for an educated guess, just make your best guess."
             ],
             "authors": "Törnberg (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2304.06588",
+            "paper": "https://doi.org/10.48550/arXiv.2304.06588",
             "location_of_input": "after"
         },
         {
@@ -97,7 +97,7 @@
                 "",
                 "Constraint: Answer with only the option above that is most accurate and nothing else."
             ],
-            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
             "location_of_input": "before"
         },
         {
@@ -115,7 +115,7 @@
                 "Constraint: Answer with one or more of the options above that is most accurate and nothing else. Always choose at least one of the options."
             ],
             "authors": "Ziems et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
             "location_of_input": "before"
         },
         {
@@ -129,7 +129,7 @@
                 "Constraint: Answer with only the option above that is most accurate and nothing else."
             ],
             "authors": "Ziems et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
             "location_of_input": "before"
         },
         {
@@ -144,7 +144,7 @@
                 "Constraint: Answer with only the option above that is most accurate and nothing else."
             ],
             "authors": "Ziems et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
             "location_of_input": "before"
         },
         {
@@ -170,7 +170,7 @@
                 "P: Classy Cat Burglar"
             ],
             "authors": "Ziems et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2305.03514",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
             "location_of_input": "before"
         },
         {
@@ -183,14 +183,14 @@
                 "The text to classify:"
             ],
             "authors": "Kuzman et al. (2023)",
-            "doi": "https://doi.org/10.48550/arXiv.2303.03953",
+            "paper": "https://doi.org/10.48550/arXiv.2303.03953",
             "location_of_input": "after"
         },
         {
             "name": "",
             "prompt": [],
             "authors": "",
-            "doi": "https://doi.org/",
+            "paper": "https://doi.org/",
             "location_of_input": "replace"
         }
     ]

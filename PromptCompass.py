@@ -1,6 +1,8 @@
 import json
 import streamlit as st
 import os
+import time
+import pandas as pd
 from dotenv import load_dotenv
 from langchain.chains import LLMChain  # import LangChain libraries
 from langchain.llms import OpenAI  # import OpenAI model
@@ -41,7 +43,7 @@ def main():
 
         # create input area for prompt
         input_values['prompt'] = st.text_area(
-            "Inspect, and possibly modify, the prompt by ["+task['authors']+"]("+task['doi']+")", prompt, height=200)
+            "Inspect, and possibly modify, the prompt by ["+task['authors']+"]("+task['paper']+")", prompt, height=200)
 
         # create input area for user input
         input_values['user'] = st.text_area(
@@ -57,18 +59,29 @@ def main():
         with st.spinner(text="In progress..."):
             load_dotenv()
 
+            start_time = time.time()
+            st.write("Start time: " + time.strftime("%H:%M:%S", time.localtime()))
+
             # Load the OpenAI API key from the environment variable
             if os.getenv("OPENAI_API_KEY") is None or os.getenv("OPENAI_API_KEY") == "":
                 st.error("OPENAI_API_KEY is not set")
                 exit(1)
+            
+            
 
-            # loop over user values in prompt
+            
             if input_values['prompt'] and input_values['user']:
+
+                # create dataframe for output
+                df = pd.DataFrame(columns=['input', 'output','model','task','prompt'])
+
                 # split user input into array
                 input_values['user'] = input_values['user'].split('\n')
 
-                # add location of user input
+                # loop over user values in prompt
                 for user_input in input_values['user']:
+                    
+                    # add location of user input to prompt
                     if task['location_of_input'] == 'before':
                         template = "{user_input}" + \
                             "\n\n" + input_values['prompt']
@@ -78,39 +91,75 @@ def main():
                     else:
                         template = input_values['prompt']
 
-                    # create prompt template
+                    # fill prompt template
                     prompt_template = PromptTemplate(
                                 input_variables=["user_input"], template=template)
                     
-                    # run the model
-                    if input_values['model']['name'] == 'text-davinci-003':
+                    # set up and run the model
+                    model_id = input_values['model']['name']
+                    if model_id == 'text-davinci-003':
                         with get_openai_callback() as cb:
-                            llm = OpenAI(temperature=0, model=input_values['model']['name'],
+                            llm = OpenAI(temperature=0, model=model_id,
                                         max_tokens=1024, openai_api_key=os.getenv("OPENAI_API_KEY"))
                             
-                            question_chain = LLMChain(
+                            llm_chain = LLMChain(
                                 llm=llm, prompt=prompt_template)
-                            st.success("Input:  "+user_input + "  \n " +
-                                    "Output: "+question_chain.run(user_input))
+                            
+                            output = llm_chain.run(user_input)
+                            st.success("Input:  " + user_input + "  \n " +
+                                    "Output: " + output)
                             st.text(cb)
-                    elif input_values['model']['name'] == 'google/flan-t5-large':
-                        model_id = 'google/flan-t5-large'# go for a smaller model if you dont have the VRAM
+                    elif model_id in ['google/flan-t5-large']:
+                        torch.cuda.empty_cache()
+
                         tokenizer = AutoTokenizer.from_pretrained(model_id)
-                        model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto')
-
-                        pipe = pipeline(
-                            "text2text-generation",
-                            model=model, 
-                            tokenizer=tokenizer, 
-                            max_length=100
-                        )
-
-                        local_llm = HuggingFacePipeline(pipeline=pipe)
-                        llm_chain = LLMChain(
-                            llm=local_llm, prompt=prompt_template, verbose=True)
                         
-                        st.success("Input:  "+user_input + "  \n " +
-                                "Output: "+llm_chain.run(user_input))
+                        if model_id == 'google/flan-t5-large':
+                            model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto')
+                            pipe = pipeline(
+                                "text2text-generation",
+                                model=model, 
+                                tokenizer=tokenizer, 
+                                max_length=100
+                            )
+                        
+                        local_llm = HuggingFacePipeline(pipeline=pipe)
+                        
+                        llm_chain = LLMChain(
+                            llm=local_llm, prompt=prompt_template)
+                        
+                        output = llm_chain.run(user_input)
+                        st.success("Input:  " + user_input + "  \n " +
+                                "Output: " + output)
+                    
+                    else:
+                        st.error("Model not found")
+                        exit(1)
+
+                    # add output to dataframe
+                    new_row = {
+                                'input': user_input,
+                                'output': output,
+                                'model': model_id,
+                                'task': task['name'], # todo: add authors / paper
+                                'prompt': prompt_template # todo: prompt, rather than template
+                            }
+                    df.loc[len(df.index)] = new_row
+
+                # make output available as csv
+                csv = df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    "Press to Download",
+                    csv,
+                    "output.csv",
+                    "text/csv",
+                    key='download-csv'
+                )
+            
+            end_time = time.time()  
+            elapsed_time = end_time - start_time
+            st.write("End time: " + time.strftime("%H:%M:%S", time.localtime()))
+            st.write("Elapsed time: " + str(round(elapsed_time,2)) + " seconds")
 
 if __name__ == "__main__":
     main()
