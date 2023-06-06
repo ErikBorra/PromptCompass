@@ -119,6 +119,43 @@
             "location_of_input": "before"
         },
         {
+            "name": "event surprisal",
+            "prompt": [
+                "This is an Event Extraction task . Does the above sentence indicate a news event?",
+                "",
+                "Constraint: only answer with 'yes' or 'no'"
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "utterance ideology",
+            "prompt": [
+                "Which of the following leanings would a political scientist say that the above article has?",
+                "",
+                "A: Liberal",
+                "B: Conservative",
+                "C: Neutral",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "humor classification",
+            "prompt": [
+                "Is the above joke humorous to most of the people?",
+                "",
+                "Constraint: You must pick between 'True' or 'False'. You cannot use any other words except for 'True' or 'False'"
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
             "name": "misinformation detection",
             "prompt": [
                 "Which of the following describes the above news headline?",
@@ -127,6 +164,17 @@
                 "B: Trustworthy",
                 "",
                 "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "implied misinformation explanation",
+            "prompt": [
+                "What is the implied message of the above news headline?",
+                "",
+                "Constraint: Answer with a short phrase like 'some masks are better than others.'"
             ],
             "authors": "Ziems et al. (2023)",
             "paper": "https://doi.org/10.48550/arXiv.2305.03514",
@@ -142,6 +190,77 @@
                 "C: None",
                 "",
                 "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "politeness",
+            "prompt": [
+                "Based on formal workplace social norms, which of the following best describes the above conversation?",
+                "",
+                "A: Polite",
+                "B: Neutral",
+                "C: Impolite",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "positive reframing",
+            "prompt": [
+                "Rephrase the above sentence to be more positive using the following strategies: ['growth', 'neutralizing'].",
+                "",
+                "Strategies are defined below",
+                "growth: viewing a challenges as an opportunities for the author to grow or improve themselves",
+                "impermanence: saying bad things don't last forever, will get better soon and/or that others have experienced similar struggles",
+                "neutralizing: replacing a negative word with a neutral word",
+                "optimism: focusing on things about the situation itself, in that moment, that are good",
+                "self-affirmation: talking about what strengths the author already has, or the values they admire",
+                "thankfulness: expressing gratitude"
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "persuasion strategies",
+            "prompt": [
+                "If a user in a community for giving away free pizza saw the above sentence, they would consider it to use which of the following persuasion strategies?",
+                "",
+                "A: Evidence (Providing concrete facts or evidence for the narrative or request, like 'There is a Pizza Hut and a Dominos near me.'",
+                "B: Politeness (The usage of polite language in requests, like 'Thank you so much!')",
+                "C: Reciprocity (Responding to a positive action with another positive action). People are more likely to help if they have received help themselves . Example messages are like 'I’ll pay it forward with my first check')",
+                "D: Impact (Emphasizing the importance or impact of the request, like 'I’ ll use this pizza to celebrate')",
+                "E: Emotion (Making requests full of emotional valence and arousal affect to influence others, like 'I’ve been in the lowest depressive state of my life')",
+                "F: Scarcity (People emphasizing on the urgency, rare of their needs, like 'I haven’t eaten a meal in two days')",
+                "G: Other",
+                "",
+                "Constraint: Answer with only the option above that is most accurate and nothing else."
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "social bias inference",
+            "prompt": [
+                "Explain the stereotype that this sentence communicates. Please use a single sentence like '[GROUP] are ______'"
+            ],
+            "authors": "Ziems et al. (2023)",
+            "paper": "https://doi.org/10.48550/arXiv.2305.03514",
+            "location_of_input": "before"
+        },
+        {
+            "name": "toxicity prediction",
+            "prompt": [
+                "Will the previouse conversation eventually derail into a personal attack?",
+                "",
+                "Constraint: Even if you are uncertain, you must pick either 'True' or 'False' with without using any other words."
             ],
             "authors": "Ziems et al. (2023)",
             "paper": "https://doi.org/10.48550/arXiv.2305.03514",
