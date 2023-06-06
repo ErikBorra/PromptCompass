@@ -14,8 +14,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoMode
 
 def main():
     # import css tasks and prompts
-    with open('selects.json') as f:
-        data = json.load(f)
+    with open('prompts.json') as f:
+        promptlib = json.load(f)
 
     # title
     st.title("Prompt Compass")
@@ -23,7 +23,7 @@ def main():
         "A Tool for Navigating Prompts for Computational Social Science and Digital Humanities")
 
     # create input area for task selection
-    tasks_with_names = [task for task in data['tasks'] if task['name']]
+    tasks_with_names = [task for task in promptlib['tasks'] if task['name']]
     task = st.selectbox('Select a task', tasks_with_names,
                         format_func=lambda x: x['name'] + " - " + x['authors'])
 
@@ -32,7 +32,7 @@ def main():
 
     if task:
         # create input area for model selection
-        model_with_names = [model for model in data['models'] if model['name']]
+        model_with_names = [model for model in promptlib['models'] if model['name']]
         input_values['model'] = st.selectbox('Select a model', model_with_names, 
                         format_func=lambda x: x['name'])
 
