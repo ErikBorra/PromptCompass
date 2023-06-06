@@ -15,6 +15,9 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoMode
 
 
 def main():
+
+    pipe = None
+
     # import css tasks and prompts
     with open('prompts.json') as f:
         promptlib = json.load(f)
@@ -33,8 +36,12 @@ def main():
     input_values = {}
 
     if task:
-        # create input area for model selection
+        
         model_with_names = [model for model in promptlib['models'] if model['name']]
+        # If there is no previous state, set the default model as the first model
+        if not st.session_state.get('previous_model'):
+            st.session_state['previous_model'] = model_with_names[0]['name']
+        # create input area for model selection
         input_values['model'] = st.selectbox('Select a model', model_with_names, 
                         format_func=lambda x: x['name'])
 
@@ -67,9 +74,13 @@ def main():
                 st.error("OPENAI_API_KEY is not set")
                 exit(1)
             
-            
-
-            
+            # if model has changed, free up memory of the previous one
+            if input_values['model']['name'] != st.session_state.get('previous_model'):
+                pipe = None
+                torch.cuda.empty_cache()
+                st.write('Changing loaded model from ' + st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
+                st.session_state['previous_model'] = input_values['model']['name']
+                
             if input_values['prompt'] and input_values['user']:
 
                 # create dataframe for output
@@ -109,21 +120,35 @@ def main():
                             st.success("Input:  " + user_input + "  \n " +
                                     "Output: " + output)
                             st.text(cb)
-                    elif model_id in ['google/flan-t5-large']:
-                        torch.cuda.empty_cache()
-
-                        tokenizer = AutoTokenizer.from_pretrained(model_id)
-                        
-                        if model_id == 'google/flan-t5-large':
-                            model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto')
-                            pipe = pipeline(
-                                "text2text-generation",
-                                model=model, 
-                                tokenizer=tokenizer, 
-                                max_length=100
-                            )
-                        
-                        local_llm = HuggingFacePipeline(pipeline=pipe)
+                    elif model_id in ['google/flan-t5-large','tiiuae/falcon-7b-instruct']:
+                        if pipe is None:
+                            
+                            tokenizer = AutoTokenizer.from_pretrained(model_id)
+                            
+                            if model_id == 'google/flan-t5-large':
+                                model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto')
+                                pipe = pipeline(
+                                    "text2text-generation",
+                                    model=model, 
+                                    tokenizer=tokenizer, 
+                                    max_length=100
+                                )
+                            elif model_id == 'tiiuae/falcon-7b-instruct':
+                                pipe = pipeline(
+                                    "text-generation",
+                                    model=model_id,
+                                    tokenizer=tokenizer,
+                                    torch_dtype=torch.bfloat16,
+                                    trust_remote_code=True,
+                                    device_map="auto",
+                                    max_length=200,
+                                    do_sample=True,
+                                    top_k=10,
+                                    num_return_sequences=1,
+                                    eos_token_id=tokenizer.eos_token_id
+                                )
+                            
+                            local_llm = HuggingFacePipeline(pipeline=pipe, model_kwargs = {'temperature':0})
                         
                         llm_chain = LLMChain(
                             llm=local_llm, prompt=prompt_template)

@@ -8,3 +8,6 @@ torch
 accelerate 
 bitsandbytes
 scipy
+
+einops
+xformers
