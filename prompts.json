@@ -11,6 +11,10 @@
         {
             "name": "tiiuae/falcon-7b-instruct",
             "resource": "https://huggingface.co/tiiuae/falcon-7b-instruct"
+        },
+        {
+            "name": "mosaicml/mpt-7b-instruct",
+            "resource": "https://huggingface.co/mosaicml/mpt-7b-instruct"
         }
     ],
     "tasks": [
@@ -262,7 +266,7 @@
         {
             "name": "toxicity prediction",
             "prompt": [
-                "Will the previouse conversation eventually derail into a personal attack?",
+                "Will the previous conversation eventually derail into a personal attack?",
                 "",
                 "Constraint: Even if you are uncertain, you must pick either 'True' or 'False' with without using any other words."
             ],

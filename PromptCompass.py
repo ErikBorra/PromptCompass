@@ -11,8 +11,7 @@ from langchain.callbacks import get_openai_callback  # import OpenAI callbacks
 from langchain.prompts import PromptTemplate  # import PromptTemplate
 from langchain.llms import HuggingFacePipeline  # import HuggingFacePipeline
 import torch # import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoModelForSeq2SeqLM # import transformers
-
+from transformers import AutoTokenizer, pipeline, AutoModelForSeq2SeqLM, AutoModelForCausalLM, StoppingCriteria, StoppingCriteriaList # import transformers
 
 def main():
 
@@ -42,6 +41,7 @@ def main():
         # If there is no previous state, set the default model as the first model
         if not st.session_state.get('previous_model'):
             st.session_state['previous_model'] = model_with_names[0]['name']
+
         # create input area for model selection
         input_values['model'] = st.selectbox('Select a model', model_with_names, 
                         format_func=lambda x: x['name'])
@@ -82,7 +82,7 @@ def main():
             if input_values['model']['name'] != st.session_state.get('previous_model'):
                 pipe = None
                 torch.cuda.empty_cache()
-                st.write('Changing loaded model from ' + st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
+                st.write('Changing model from ' + st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
                 st.session_state['previous_model'] = input_values['model']['name']
                 
             if input_values['prompt'] and input_values['user']:
@@ -90,26 +90,27 @@ def main():
                 # create dataframe for output
                 df = pd.DataFrame(columns=['input', 'output','model','task','authors','prompt'])
 
+                # create prompt template
+                # add location of user input to prompt
+                if task['location_of_input'] == 'before':
+                    template = "{user_input}" + \
+                        "\n\n" + input_values['prompt']
+                elif task['location_of_input'] == 'after':
+                    template = input_values['prompt'] + \
+                        "\n\n" + "{user_input}"
+                else:
+                    template = input_values['prompt']
+
+                # fill prompt template
+                prompt_template = PromptTemplate(
+                            input_variables=["user_input"], template=template)
+
                 # split user input into array
                 input_values['user'] = input_values['user'].split('\n')
 
                 # loop over user values in prompt
                 for user_input in input_values['user']:
-                    
-                    # add location of user input to prompt
-                    if task['location_of_input'] == 'before':
-                        template = "{user_input}" + \
-                            "\n\n" + input_values['prompt']
-                    elif task['location_of_input'] == 'after':
-                        template = input_values['prompt'] + \
-                            "\n\n" + "{user_input}"
-                    else:
-                        template = input_values['prompt']
-
-                    # fill prompt template
-                    prompt_template = PromptTemplate(
-                                input_variables=["user_input"], template=template)
-                    
+        
                     # set up and run the model
                     model_id = input_values['model']['name']
                     if model_id == 'text-davinci-003':
@@ -129,7 +130,7 @@ def main():
                             st.text(cb)
                     elif model_id in ['google/flan-t5-large','tiiuae/falcon-7b-instruct']:
                         if pipe is None:
-                            
+                            st.write('Loading model '+model_id)
                             tokenizer = AutoTokenizer.from_pretrained(model_id)
                             
                             if model_id == 'google/flan-t5-large':
@@ -138,7 +139,8 @@ def main():
                                     "text2text-generation",
                                     model=model, 
                                     tokenizer=tokenizer, 
-                                    max_length=100
+                                    device_map="auto",
+                                    max_length=200
                                 )
                             elif model_id == 'tiiuae/falcon-7b-instruct':
                                 pipe = pipeline(
@@ -155,7 +157,8 @@ def main():
                                     eos_token_id=tokenizer.eos_token_id
                                 )
                             
-                            local_llm = HuggingFacePipeline(pipeline=pipe, model_kwargs = {'temperature':0})
+                            local_llm = HuggingFacePipeline(pipeline=pipe, model_kwargs = {'temperature':0.0})
+                            st.write('Model loaded')
                         
                         llm_chain = LLMChain(
                             llm=local_llm, prompt=prompt_template)
@@ -163,7 +166,55 @@ def main():
                         output = llm_chain.run(user_input)
                         st.success("Input:  " + user_input + "  \n " +
                                 "Output: " + output)
-                    
+                    elif model_id == "mosaicml/mpt-7b-instruct":
+                        
+                        if pipe is None:
+                            st.write('Loading model '+model_id)
+
+                            model = AutoModelForCausalLM.from_pretrained(
+                                'mosaicml/mpt-7b-instruct',
+                                trust_remote_code=True,
+                                torch_dtype=torch.bfloat16,
+                                max_seq_len=2048,
+                                device_map="auto"
+                            )
+                            
+                            # MPT-7B model was trained using the EleutherAI/gpt-neox-20b tokenizer
+                            tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neox-20b")
+
+                            # mtp-7b is trained to add "<|endoftext|>" at the end of generations
+                            stop_token_ids = tokenizer.convert_tokens_to_ids(["<|endoftext|>"])
+                            # define custom stopping criteria object
+                            class StopOnTokens(StoppingCriteria):
+                                def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
+                                    for stop_id in stop_token_ids:
+                                        if input_ids[0][-1] == stop_id:
+                                            return True
+                                    return False
+                            stopping_criteria = StoppingCriteriaList([StopOnTokens()])  
+
+                            pipe = pipeline(
+                                task='text-generation',
+                                model=model, 
+                                tokenizer=tokenizer,
+                                return_full_text=True,  # langchain expects the full text
+                                # we pass model parameters here too
+                                stopping_criteria=stopping_criteria,  # without this model will ramble
+                                temperature=0.0,  # 'randomness' of outputs, 0.0 is the min and 1.0 the max
+                                top_p=0.15,  # select from top tokens whose probability add up to 15%
+                                top_k=0,  # select from top 0 tokens (because zero, relies on top_p)
+                                max_new_tokens=64,  # mex number of tokens to generate in the output
+                                repetition_penalty=1.1  # without this output begins repeating
+                            )
+                            local_llm = HuggingFacePipeline(pipeline=pipe)
+
+                            st.write("model loaded")
+
+                        llm_chain = LLMChain(llm=local_llm, prompt=prompt_template)
+
+                        output = llm_chain.run(user_input)
+                        st.success("Input:  " + user_input + "  \n " +
+                            "Output: " + output)
                     else:
                         st.error("Model not found")
                         exit(1)
@@ -193,6 +244,6 @@ def main():
             elapsed_time = end_time - start_time
             st.write("End time: " + time.strftime("%H:%M:%S", time.localtime()))
             st.write("Elapsed time: " + str(round(elapsed_time,2)) + " seconds")
-
+    
 if __name__ == "__main__":
     main()
