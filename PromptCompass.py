@@ -82,7 +82,7 @@ def main():
             if input_values['model']['name'] != st.session_state.get('previous_model'):
                 pipe = None
                 torch.cuda.empty_cache()
-                st.write('Changing model from ' + st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
+                #st.write('Changing model from ' + st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
                 st.session_state['previous_model'] = input_values['model']['name']
                 
             if input_values['prompt'] and input_values['user']:
@@ -130,7 +130,7 @@ def main():
                             st.text(cb)
                     elif model_id in ['google/flan-t5-large','tiiuae/falcon-7b-instruct']:
                         if pipe is None:
-                            st.write('Loading model '+model_id)
+                            #st.write('Loading model '+model_id)
                             tokenizer = AutoTokenizer.from_pretrained(model_id)
                             
                             if model_id == 'google/flan-t5-large':
@@ -169,7 +169,7 @@ def main():
                     elif model_id == "mosaicml/mpt-7b-instruct":
                         
                         if pipe is None:
-                            st.write('Loading model '+model_id)
+                            #st.write('Loading model '+model_id)
 
                             model = AutoModelForCausalLM.from_pretrained(
                                 'mosaicml/mpt-7b-instruct',
@@ -233,7 +233,7 @@ def main():
                 # make output available as csv
                 csv = df.to_csv(index=False).encode('utf-8')
                 st.download_button(
-                    "Press to Download",
+                    "Download CSV",
                     csv,
                     "output.csv",
                     "text/csv",
