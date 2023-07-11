@@ -191,13 +191,13 @@ def main():
                         output = llm_chain.run(user_input)
                         st.success("Input:  " + user_input + "  \n " +
                                    "Output: " + output)
-                    elif model_id in ['google/flan-t5-large', 'tiiuae/falcon-7b-instruct']:
+                    elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct']:
                         if pipe is None:
                             tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-                            if model_id == 'google/flan-t5-large':
+                            if model_id in ['google/flan-t5-large', 'google/flan-t5-xl']:
                                 model = AutoModelForSeq2SeqLM.from_pretrained(
-                                    model_id, load_in_8bit=True, device_map='auto')
+                                    model_id, load_in_8bit=False, device_map='auto')
                                 pipe = pipeline(
                                     "text2text-generation",
                                     model=model,

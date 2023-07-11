@@ -5,6 +5,10 @@
             "resource": "https://huggingface.co/google/flan-t5-large"
         },
         {
+            "name": "google/flan-t5-xl",
+            "resource": "https://huggingface.co/google/flan-t5-xl"
+        },
+        {
             "name": "tiiuae/falcon-7b-instruct",
             "resource": "https://huggingface.co/tiiuae/falcon-7b-instruct"
         },
