@@ -138,8 +138,8 @@ def main():
                 # loop over user values in prompt
                 for key, user_input in enumerate(input_values['user']):
 
-                    user_input = user_input.strip()
-                    if user_input == "":
+                    user_input = str(user_input).strip()
+                    if user_input == "" or user_input == "nan":
                         continue
 
                     # set up and run the model
