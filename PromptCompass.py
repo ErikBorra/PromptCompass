@@ -2,6 +2,7 @@ import json
 import streamlit as st
 import os
 import time
+import gc
 import pandas as pd
 from dotenv import load_dotenv
 from langchain.chains import LLMChain  # import LangChain libraries
@@ -25,11 +26,23 @@ def main():
     with open('prompts.json') as f:
         promptlib = json.load(f)
 
+    hide_default_format = """
+       <style>
+       #MainMenu {visibility: hidden; }
+       footer {visibility: hidden;}
+       </style>
+       """
+    st.markdown(hide_default_format, unsafe_allow_html=True)
+
     # title
     st.title("Prompt Compass")
     st.subheader(
         "A Tool for Navigating Prompts for Computational Social Science and Digital Humanities")
-
+    # Add Link to your repo
+    st.markdown(
+        '''
+        [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/ErikBorra/PromptCompass)
+        ''', unsafe_allow_html=True)
     # load available models
     model_with_names = [
         model for model in promptlib['models'] if model['name']]
@@ -61,7 +74,6 @@ def main():
                         format_func=lambda x: x['name'] + " - " + x['authors'])
 
     # Create input areas for prompts and user input
-
     if task:
 
         # concatenate all strings from prompt array
@@ -73,7 +85,7 @@ def main():
 
         # allow the user to select the input type
         input_type = st.radio("Choose input type:",
-                              ('Text input', 'Upload a CSV'))
+                              ('Text input', 'Upload a CSV'), horizontal=True)
 
         if input_type == 'Text input':
             # create input area for user input
@@ -101,6 +113,7 @@ def main():
 
     # Submit button
     submit_button = st.button('Submit')
+
     st.write('---')  # Add a horizontal line
 
     # Process form submission
@@ -115,7 +128,9 @@ def main():
             if input_values['model']['name'] != st.session_state.get('previous_model'):
                 pipe = None
                 torch.cuda.empty_cache()
-                # st.write('Changing model from ' + st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
+                gc.collect()  # garbage collection
+                st.write('Changing model from ' +
+                         st.session_state['previous_model'] + ' to ' + input_values['model']['name'] + '...')
                 st.session_state['previous_model'] = input_values['model']['name']
 
             if input_values['prompt'] and input_values['user']:
