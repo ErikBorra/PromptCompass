@@ -71,9 +71,33 @@ def main():
         input_values['prompt'] = st.text_area(
             "Inspect, and possibly modify, the prompt by ["+task['authors']+"]("+task['paper']+")", prompt, height=200)
 
-        # create input area for user input
-        input_values['user'] = st.text_area(
-            "Input to be analyzed with the prompt (one thing per line):", "this user is happy\none user is just a user\nthe other user is a lier")
+        # allow the user to select the input type
+        input_type = st.radio("Choose input type:",
+                              ('Text input', 'Upload a CSV'))
+
+        if input_type == 'Text input':
+            # create input area for user input
+            input_values['user'] = st.text_area(
+                "Input to be analyzed with the prompt (one thing per line):",
+                "this user is happy\none user is just a user\nthe other user is a lier")
+            # if the user's input is not a list (e.g. a string), then split it by newlines
+            if isinstance(input_values['user'], str):
+                input_values['user'] = input_values['user'].split('\n')
+            data = pd.DataFrame(input_values['user'], columns=['user_input'])
+        else:
+            # upload CSV
+            uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+
+            if uploaded_file is not None:
+                # convert the uploaded file to a dataframe
+                data = pd.read_csv(uploaded_file)
+
+                # ask user to select a column
+                column_to_extract = st.selectbox(
+                    'Choose a column to apply the prompt on:', data.columns)
+
+                # process the selected column from the dataframe
+                input_values['user'] = data[column_to_extract].tolist()
 
     # Submit button
     submit_button = st.button('Submit')
@@ -96,10 +120,6 @@ def main():
 
             if input_values['prompt'] and input_values['user']:
 
-                # create dataframe for output
-                df = pd.DataFrame(
-                    columns=['input', 'output', 'model', 'task', 'authors', 'prompt'])
-
                 # create prompt template
                 # add location of user input to prompt
                 if task['location_of_input'] == 'before':
@@ -115,11 +135,8 @@ def main():
                 prompt_template = PromptTemplate(
                     input_variables=["user_input"], template=template)
 
-                # split user input into array
-                input_values['user'] = input_values['user'].split('\n')
-
                 # loop over user values in prompt
-                for user_input in input_values['user']:
+                for key, user_input in enumerate(input_values['user']):
 
                     user_input = user_input.strip()
                     if user_input == "":
@@ -273,18 +290,16 @@ def main():
                         exit(1)
 
                     # add output to dataframe
-                    new_row = {
-                        'input': user_input,
-                        'output': output,
-                        'model': model_id,
-                        'task': task['name'],
-                        'authors': task['authors'],
-                        'prompt': template
-                    }
-                    df.loc[len(df.index)] = new_row
+                    data.loc[key, 'output'] = output
+                    data.loc[key, 'model'] = model_id
+                    data.loc[key, 'task'] = task['name']
+                    data.loc[key, 'authors'] = task['authors']
+                    data.loc[key, 'prompt'] = template
+                    data.loc[key, 'timestamp'] = time.strftime(
+                        "%Y-%m-%d %H:%M:%S", time.localtime())
 
                 # make output available as csv
-                csv = df.to_csv(index=False).encode('utf-8')
+                csv = data.to_csv(index=False).encode('utf-8')
                 st.download_button(
                     "Download CSV",
                     csv,
