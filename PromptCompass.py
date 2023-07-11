@@ -159,12 +159,12 @@ def main():
 
                     # set up and run the model
                     model_id = input_values['model']['name']
-                    if model_id in ['gpt-3.5-turbo', 'text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001', 'gpt-4']:
+                    if model_id in ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001', 'gpt-4']:
                         if open_ai_key is None or open_ai_key == "":
                             st.error("Please provide an Open AI API Key")
                             exit(1)
                         with get_openai_callback() as cb:
-                            if model_id in ['gpt-3.5-turbo', 'gpt-4']:
+                            if model_id in ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4']:
                                 llm = ChatOpenAI(temperature=0, model=model_id,
                                                  max_tokens=1024, openai_api_key=open_ai_key)
                             else:
