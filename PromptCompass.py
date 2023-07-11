@@ -21,6 +21,7 @@ def main():
 
     pipe = None
     open_ai_key = None
+    uploaded_file = None
 
     # import css tasks and prompts
     with open('prompts.json') as f:
@@ -110,6 +111,11 @@ def main():
 
                 # process the selected column from the dataframe
                 input_values['user'] = data[column_to_extract].tolist()
+
+        # Determine the output file name
+        filename = uploaded_file.name if uploaded_file else 'output.csv'
+        base_filename, file_extension = os.path.splitext(filename)
+        output_filename = f"{base_filename}_promptcompass{file_extension}"
 
     # Submit button
     submit_button = st.button('Submit')
@@ -306,19 +312,19 @@ def main():
 
                     # add output to dataframe
                     data.loc[key, 'output'] = output
-                    data.loc[key, 'model'] = model_id
-                    data.loc[key, 'task'] = task['name']
-                    data.loc[key, 'authors'] = task['authors']
-                    data.loc[key, 'prompt'] = template
-                    data.loc[key, 'timestamp'] = time.strftime(
+                    data.loc[key, 'llm'] = model_id
+                    data.loc[key, 'prompt timestamp'] = time.strftime(
                         "%Y-%m-%d %H:%M:%S", time.localtime())
+                    data.loc[key, 'prompt name'] = task['name']
+                    data.loc[key, 'prompt authors'] = task['authors']
+                    data.loc[key, 'prompt'] = template
 
                 # make output available as csv
                 csv = data.to_csv(index=False).encode('utf-8')
                 st.download_button(
                     "Download CSV",
                     csv,
-                    "output.csv",
+                    output_filename,
                     "text/csv",
                     key='download-csv'
                 )
