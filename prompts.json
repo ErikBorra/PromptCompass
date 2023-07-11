@@ -5,16 +5,48 @@
             "resource": "https://huggingface.co/google/flan-t5-large"
         },
         {
-            "name": "text-davinci-003",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
-        },
-        {
             "name": "tiiuae/falcon-7b-instruct",
             "resource": "https://huggingface.co/tiiuae/falcon-7b-instruct"
         },
         {
             "name": "mosaicml/mpt-7b-instruct",
             "resource": "https://huggingface.co/mosaicml/mpt-7b-instruct"
+        },
+        {
+            "name": "gpt-4",
+            "resource": "https://platform.openai.com/docs/models/gpt-4"
+        },
+        {
+            "name": "gpt-3.5-turbo",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "text-davinci-003",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "text-davinci-002",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "text-curie-001",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "text-babbage-001",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "text-ada-001",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "tiiuae/falcon-7b",
+            "resource": "https://huggingface.co/tiiuae/falcon-7b"
+        },
+        {
+            "name": "mosaicml/mpt-7b",
+            "resource": "https://huggingface.co/mosaicml/mpt-7b"
         }
     ],
     "tasks": [
@@ -314,13 +346,22 @@
             "location_of_input": "after"
         },
         {
-            "name": "custom",
+            "name": "custom - instruct",
             "prompt": [
                 "Prompt: YOUR PROMPT HERE",
                 "",
                 "Text: {user_input}",
                 "",
                 "Answer:"
+            ],
+            "authors": "user",
+            "paper": "",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "custom - complete",
+            "prompt": [
+                "{user_input}"
             ],
             "authors": "user",
             "paper": "",
