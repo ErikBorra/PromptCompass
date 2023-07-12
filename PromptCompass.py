@@ -153,6 +153,10 @@ def main():
                 else:
                     template = input_values['prompt']
 
+                # make sure users don't forget the user input variable
+                if "{user_input}" not in template:
+                    template = template + "\n\n{user_input}"
+
                 # fill prompt template
                 prompt_template = PromptTemplate(
                     input_variables=["user_input"], template=template)
