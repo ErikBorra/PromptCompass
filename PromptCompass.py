@@ -4,6 +4,7 @@ import os
 import time
 import gc
 import pandas as pd
+import tiktoken
 from dotenv import load_dotenv
 from langchain.chains import LLMChain  # import LangChain libraries
 from langchain.llms import OpenAI  # import OpenAI model
@@ -159,6 +160,8 @@ def main():
                 # loop over user values in prompt
                 for key, user_input in enumerate(input_values['user']):
 
+                    num_tokens = None
+
                     user_input = str(user_input).strip()
                     if user_input == "" or user_input == "nan":
                         continue
@@ -181,7 +184,13 @@ def main():
                                 llm=llm, prompt=prompt_template)
 
                             output = llm_chain.run(user_input)
-                            st.success("Input:  " + user_input + "  \n " +
+
+                            encoding = tiktoken.encoding_for_model(model_id)
+                            num_tokens = len(encoding.encode(
+                                prompt_template.format(user_input=user_input)))
+
+                            st.success("Input:  " + user_input + "  \n\n " +
+                                       "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                        "Output: " + output)
                             st.text(cb)
                     elif model_id in ['tiiuae/falcon-7b', 'mosaicml/mpt-7b']:
@@ -248,7 +257,10 @@ def main():
                             llm=local_llm, prompt=prompt_template)
 
                         output = llm_chain.run(user_input)
-                        st.success("Input:  " + user_input + "  \n " +
+                        num_tokens = len(tokenizer.tokenize(
+                            prompt_template.format(user_input=user_input)))
+                        st.success("Input:  " + user_input + "  \n\n " +
+                                   "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                    "Output: " + output)
                     elif model_id == "mosaicml/mpt-7b-instruct":
 
@@ -316,6 +328,7 @@ def main():
                         "%Y-%m-%d %H:%M:%S", time.localtime())
                     data.loc[key, 'prompt name'] = task['name']
                     data.loc[key, 'prompt authors'] = task['authors']
+                    data.loc[key, '# input tokens'] = str(int(num_tokens))
                     data.loc[key, 'prompt'] = template
 
                 # make output available as csv
