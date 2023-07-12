@@ -223,8 +223,7 @@ def main():
                                     "text2text-generation",
                                     model=model,
                                     tokenizer=tokenizer,
-                                    device_map="auto",
-                                    max_length=200
+                                    device_map="auto"
                                 )
                             elif model_id == 'tiiuae/falcon-7b-instruct':
                                 pipe = pipeline(
