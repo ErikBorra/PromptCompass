@@ -320,7 +320,7 @@ def main():
                                         model=model_id,
                                         tokenizer=tokenizer,
                                         # in bfloat16 it takes ~65GB of VRAM on A1000 80GB, in 8bit ~46GB
-                                        load_in_8bit=True,
+                                        # load_in_8bit=True,
                                         trust_remote_code=True,
                                         device_map="auto",
                                         do_sample=True,

@@ -3,6 +3,7 @@ python_dotenv
 langchain
 openai
 
+tiktoken
 transformers
 torch
 accelerate 
@@ -11,4 +12,3 @@ scipy
 
 einops
 xformers
-gc
