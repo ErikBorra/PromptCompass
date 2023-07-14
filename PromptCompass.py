@@ -287,7 +287,7 @@ def main():
                             output = llm_chain.run(user_input)
                             st.success("Input:  " + user_input + "  \n " +
                                        "Output: " + output)
-                        elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct']:
+                        elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
                             if pipe is None:
                                 tokenizer = AutoTokenizer.from_pretrained(
                                     model_id)
@@ -307,6 +307,20 @@ def main():
                                         model=model_id,
                                         tokenizer=tokenizer,
                                         torch_dtype=torch.bfloat16,
+                                        trust_remote_code=True,
+                                        device_map="auto",
+                                        do_sample=True,
+                                        top_k=10,
+                                        num_return_sequences=1,
+                                        eos_token_id=tokenizer.eos_token_id
+                                    )
+                                elif model_id == 'tiiuae/falcon-40b-instruct':
+                                    pipe = pipeline(
+                                        "text-generation",
+                                        model=model_id,
+                                        tokenizer=tokenizer,
+                                        # in bfloat16 it takes ~65GB of VRAM on A1000 80GB, in 8bit ~46GB
+                                        torch_dtype=torch.bfloat8,
                                         trust_remote_code=True,
                                         device_map="auto",
                                         do_sample=True,

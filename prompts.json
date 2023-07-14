@@ -55,6 +55,10 @@
         {
             "name": "mosaicml/mpt-7b",
             "resource": "https://huggingface.co/mosaicml/mpt-7b"
+        },
+        {
+            "name": "tiiuae/falcon-40b-instruct",
+            "resource": "https://huggingface.co/tiiuae/falcon-40b-instruct"
         }
     ],
     "tasks": [
