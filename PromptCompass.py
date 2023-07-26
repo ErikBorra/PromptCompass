@@ -70,6 +70,9 @@ def main():
         else:
             open_ai_key = os.getenv("OPENAI_API_KEY")
 
+    temperature = -1
+    top_p = -1
+    max_new_tokens = -1
     with st.expander("Advanced settings"):
         st.markdown(
             """
@@ -253,6 +256,7 @@ def main():
                                                "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                                "Output: " + output)
                                     st.text(cb)
+
                             elif model_id in ['tiiuae/falcon-7b', 'mosaicml/mpt-7b']:
                                 if pipe == None:
                                     st.write('Loading model %s' % model_id)
