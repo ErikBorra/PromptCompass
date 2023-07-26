@@ -70,10 +70,28 @@ def main():
         else:
             open_ai_key = os.getenv("OPENAI_API_KEY")
 
-    temperature = -1
+    temperature = 0.001
     top_p = -1
     max_new_tokens = -1
     with st.expander("Advanced settings"):
+        if input_values['model']['resource'] not in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4"]:
+            st.markdown(
+                """
+            **Set Maximum Length**: Determines the maximum number of tokens of the **generated** text. A token is approximately four characters word, although this depends on the model.
+            A value of -1 means the parameter will not be specified.
+            """
+            )
+            max_new_tokens = st.number_input(
+                'Maximum Length', value=256, min_value=-1, step=1)
+            st.markdown(
+                """
+            **Set do_sample**: This controls how the model generates text. If do_sample=True, the model will use a probabilistic approach to generate text, where the likelihood of each word being chosen depends on its predicted probability. Use the below parameters to further control its behavior. If do_sample=False, the model will use a deterministic approach and always choose the most likely next word. 
+            """
+            )
+            do_sample = st.radio(
+                'Set do_sample',
+                ('False', 'True')
+            )
         st.markdown(
             """
         **Temperature**: Controls the randomness in the model's responses.
@@ -82,7 +100,7 @@ def main():
         """
         )
         temperature = st.number_input(
-            'Set Temperature', min_value=-1.0, max_value=2.0, value=0.0)
+            'Set Temperature', min_value=-1.0, max_value=2.0, value=0.001, format="%.3f")
 
         st.markdown(
             """
@@ -93,42 +111,46 @@ def main():
         )
         top_p = st.number_input('Set Top-P', min_value=-
                                 1.0, max_value=1.0, value=-1.0)
-        st.markdown(
-            """
-        **Set Maxium Length**: Determines the maximum number of tokens of the **generated** text. A token is approximately four characters word, although this depends on the model.
-        A value of -1 means the parameter will not be specified.
-        """
-        )
-        max_new_tokens = st.number_input(
-            'Maximum Length', value=-1, min_value=-1, step=1)
 
     # Check for correct values
     allgood = True
+    # set model kwargs
+    model_kwargs = {}
+
+    if input_values['model']['resource'] not in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4"]:
+        # check if max_new_tokens is at least 1 or -1
+        if not (max_new_tokens > 0 or max_new_tokens == -1):
+            st.error(
+                'Error: Max Tokens must be at least 1. Choose -1 if you want to use the default model value.')
+            max_new_tokens = -1
+            allgood = False
+        if max_new_tokens > 0:
+            model_kwargs['max_new_tokens'] = max_new_tokens
+
+        if do_sample not in ['True', 'False']:
+            st.error(
+                'Error: do_Sample must be True or False')
+            do_sample = False
+            allgood = False
+        do_sample = True if do_sample == 'True' else False
+        if do_sample in [True, False]:
+            model_kwargs['do_sample'] = do_sample
+
     if not (0 <= temperature <= 2 or temperature == -1):
         st.error(
             "Temperature value must be between 0 and 2. Choose -1 if you want to use the default model value.")
         temperature = -1
         allgood = False
+    if 0 <= temperature <= 2:
+        model_kwargs['temperature'] = temperature
+
     if not (0 <= top_p <= 1 or top_p == -1):
         st.error(
             "Top P value must be between 0 and 1. Choose -1 if you want to use the default model value.")
         top_p = -1
         allgood = False
-    # check if max_new_tokens is at least 1 or -1
-    if not (max_new_tokens > 0 or max_new_tokens == -1):
-        st.error(
-            'Error: Max Tokens must be at least 1. Choose -1 if you want to use the default model value.')
-        max_new_tokens = -1
-        allgood = False
-
-    # set model kwargs
-    model_kwargs = {}
-    if 0 <= temperature <= 2:
-        model_kwargs['temperature'] = temperature
     if 0 <= top_p <= 1:
         model_kwargs['top_p'] = top_p
-    if max_new_tokens > 0:
-        model_kwargs['max_tokens'] = max_new_tokens
 
     # create input area for task selection
     tasks_with_names = [task for task in promptlib['tasks'] if task['name']]
@@ -256,35 +278,60 @@ def main():
                                                "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                                "Output: " + output)
                                     st.text(cb)
-
-                            elif model_id in ['tiiuae/falcon-7b', 'mosaicml/mpt-7b']:
+                            elif model_id in ['tiiuae/falcon-7b', 'mosaicml/mpt-7b', 'meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
                                 if pipe == None:
                                     st.write('Loading model %s' % model_id)
-                                    tokenizer = AutoTokenizer.from_pretrained(
-                                        model_id)
+                                    # to use the llama-2 models,
+                                    # you first need to get access to the llama-2 models via e.g. https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
+                                    # once accepted, get a hugging face auth token https://huggingface.co/settings/tokens
+                                    # and then run `huggingface-cli login` on the command line, filling in the generated token
+                                    if model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
+                                        tokenizer = AutoTokenizer.from_pretrained(
+                                            model_id, use_auth_token=True)
+                                    else:
+                                        tokenizer = AutoTokenizer.from_pretrained(
+                                            model_id)
 
-                                    pipe = pipeline(
-                                        "text-generation",
-                                        model=model_id,
-                                        tokenizer=tokenizer,
-                                        torch_dtype=torch.bfloat16,
-                                        trust_remote_code=True,
-                                        device_map="auto",
-                                        do_sample=True,
-                                        top_k=10,
-                                        num_return_sequences=1,
-                                        eos_token_id=tokenizer.eos_token_id,
-                                    )
+                                    if model_id == "meta-llama/Llama-2-13b-chat-hf":
+                                        pipe = pipeline(
+                                            "text-generation",
+                                            model=model_id,
+                                            tokenizer=tokenizer,
+                                            # torch_dtype="auto",
+                                            trust_remote_code=True,
+                                            device_map="auto",
+                                            num_return_sequences=1,
+                                            eos_token_id=tokenizer.eos_token_id,
+                                            **model_kwargs
+                                        )
+                                    else:
+                                        pipe = pipeline(
+                                            "text-generation",
+                                            model=model_id,
+                                            tokenizer=tokenizer,
+                                            torch_dtype="auto",
+                                            trust_remote_code=True,
+                                            device_map="auto",
+                                            num_return_sequences=1,
+                                            eos_token_id=tokenizer.eos_token_id,
+                                            **model_kwargs
+                                        )
 
                                     local_llm = HuggingFacePipeline(
-                                        pipeline=pipe, model_kwargs=model_kwargs)
-                                    st.write('Model %s loaded' % model_id)
+                                        pipeline=pipe)
+
+                                    st.write('Model loaded')
 
                                 llm_chain = LLMChain(
                                     llm=local_llm, prompt=prompt_template)
 
                                 output = llm_chain.run(user_input)
-                                st.success("Input:  " + user_input + "  \n " +
+
+                                num_tokens = len(tokenizer.tokenize(
+                                    prompt_template.format(user_input=user_input)))
+
+                                st.success("Input:  " + user_input + "  \n\n " +
+                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
                             elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
                                 if pipe is None:
@@ -297,40 +344,30 @@ def main():
                                             model_id, load_in_8bit=False, device_map='auto')
                                         pipe = pipeline(
                                             "text2text-generation",
-                                            model=model,
+                                            model=model_id,
                                             tokenizer=tokenizer,
-                                            device_map="auto"
+                                            torch_dtype="auto",
+                                            trust_remote_code=True,
+                                            device_map="auto",
+                                            num_return_sequences=1,
+                                            eos_token_id=tokenizer.eos_token_id,
+                                            **model_kwargs
                                         )
-                                    elif model_id == 'tiiuae/falcon-7b-instruct':
+                                    elif model_id in ['tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
                                         pipe = pipeline(
                                             "text-generation",
                                             model=model_id,
                                             tokenizer=tokenizer,
-                                            torch_dtype=torch.bfloat16,
+                                            torch_dtype="auto",
                                             trust_remote_code=True,
                                             device_map="auto",
-                                            do_sample=True,
-                                            top_k=10,
                                             num_return_sequences=1,
-                                            eos_token_id=tokenizer.eos_token_id
-                                        )
-                                    elif model_id == 'tiiuae/falcon-40b-instruct':
-                                        pipe = pipeline(
-                                            "text-generation",
-                                            model=model_id,
-                                            tokenizer=tokenizer,
-                                            # in bfloat16 it takes ~65GB of VRAM on A1000 80GB, in 8bit ~46GB
-                                            # load_in_8bit=True,
-                                            trust_remote_code=True,
-                                            device_map="auto",
-                                            do_sample=True,
-                                            top_k=10,
-                                            num_return_sequences=1,
-                                            eos_token_id=tokenizer.eos_token_id
+                                            eos_token_id=tokenizer.eos_token_id,
+                                            **model_kwargs
                                         )
 
                                     local_llm = HuggingFacePipeline(
-                                        pipeline=pipe, model_kwargs=model_kwargs)
+                                        pipeline=pipe)
                                     st.write('Model %s loaded' % model_id)
 
                                 llm_chain = LLMChain(
@@ -376,18 +413,18 @@ def main():
                                         task='text-generation',
                                         model=model,
                                         tokenizer=tokenizer,
+                                        torch_dtype="auto",
+                                        device_map="auto",
+                                        num_return_sequences=1,
+                                        eos_token_id=tokenizer.eos_token_id,
+                                        **model_kwargs,
                                         return_full_text=True,  # langchain expects the full text
-                                        # we pass model parameters here too
                                         stopping_criteria=stopping_criteria,  # without this model will ramble
-                                        # temperature=0.0,  # 'randomness' of outputs, 0.0 is the min and 1.0 the max
-                                        # top_p=0.15,  # select from top tokens whose probability add up to 15%
-                                        # select from top 0 tokens (because zero, relies on top_p)
-                                        top_k=0,
-                                        # max_new_tokens=64,  # mex number of tokens to generate in the output
                                         repetition_penalty=1.1  # without this output begins repeating
                                     )
+
                                     local_llm = HuggingFacePipeline(
-                                        pipeline=pipe, model_kwargs=model_kwargs)
+                                        pipeline=pipe)
 
                                     st.write('Model %s loaded' % model_id)
 
@@ -395,7 +432,12 @@ def main():
                                     llm=local_llm, prompt=prompt_template)
 
                                 output = llm_chain.run(user_input)
-                                st.success("Input:  " + user_input + "  \n " +
+
+                                num_tokens = len(tokenizer.tokenize(
+                                    prompt_template.format(user_input=user_input)))
+
+                                st.success("Input:  " + user_input + "  \n\n " +
+                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
                             else:
                                 st.error("Model %s not found" % model_id)
@@ -419,6 +461,9 @@ def main():
                             if "max_tokens" in model_kwargs:
                                 data.loc[key,
                                          'max_tokens'] = int(model_kwargs['max_tokens'])
+                            if "do_sample" in model_kwargs:
+                                data.loc[key,
+                                         'do_sample'] = int(model_kwargs['do_sample'])
 
                         # make output available as csv
                         csv = data.to_csv(index=False).encode('utf-8')
@@ -429,6 +474,8 @@ def main():
                             "text/csv",
                             key='download-csv'
                         )
+
+                        # st.write(vars(pipe)) # print all variables set in the pipeline
 
                     end_time = time.time()
                     elapsed_time = end_time - start_time

@@ -9,6 +9,14 @@
             "resource": "https://huggingface.co/google/flan-t5-xl"
         },
         {
+            "name": "meta-llama/Llama-2-7b-chat-hf",
+            "resource": "https://huggingface.co/meta-llama/Llama-2-7b-chat-hf"
+        },
+        {
+            "name": "meta-llama/Llama-2-13b-chat-hf",
+            "resource": "https://huggingface.co/meta-llama/Llama-2-13b-chat-hf"
+        },
+        {
             "name": "tiiuae/falcon-7b-instruct",
             "resource": "https://huggingface.co/tiiuae/falcon-7b-instruct"
         },
