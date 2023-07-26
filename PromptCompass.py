@@ -437,6 +437,24 @@ def main():
                 st.write("Elapsed time: " +
                          str(round(elapsed_time, 2)) + " seconds")
 
+                # free up variables
+                if 'data' in locals() and data is not None:
+                    del data
+                if 'pipe' in locals() and pipe is not None:
+                    del pipe
+                if 'llm_chain' in locals() and llm_chain is not None:
+                    del llm_chain
+                if 'llm' in locals() and llm is not None:
+                    del llm
+                if 'local_llm' in locals() and local_llm is not None:
+                    del local_llm
+                if 'model' in locals() and model is not None:
+                    del model
+                if 'tokenizer' in locals() and tokenizer is not None:
+                    del tokenizer
+                gc.collect()  # garbage collection
+                torch.cuda.empty_cache()
+
 
 if __name__ == "__main__":
     main()
