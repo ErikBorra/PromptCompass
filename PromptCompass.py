@@ -281,47 +281,48 @@ def main():
                                     st.text(cb)
                             elif model_id in ['tiiuae/falcon-7b', 'mosaicml/mpt-7b', 'meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
                                 if pipe == None:
-                                    st.write('Loading model %s' % model_id)
-                                    # to use the llama-2 models,
-                                    # you first need to get access to the llama-2 models via e.g. https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
-                                    # once accepted, get a hugging face auth token https://huggingface.co/settings/tokens
-                                    # and then run `huggingface-cli login` on the command line, filling in the generated token
-                                    if model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
-                                        tokenizer = AutoTokenizer.from_pretrained(
-                                            model_id, use_auth_token=True)
-                                    else:
-                                        tokenizer = AutoTokenizer.from_pretrained(
-                                            model_id)
+                                    with st.status('Loading model %s' % model_id) as status:
+                                        # to use the llama-2 models,
+                                        # you first need to get access to the llama-2 models via e.g. https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
+                                        # once accepted, get a hugging face auth token https://huggingface.co/settings/tokens
+                                        # and then run `huggingface-cli login` on the command line, filling in the generated token
+                                        if model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
+                                            tokenizer = AutoTokenizer.from_pretrained(
+                                                model_id, use_auth_token=True)
+                                        else:
+                                            tokenizer = AutoTokenizer.from_pretrained(
+                                                model_id)
 
-                                    if model_id == "meta-llama/Llama-2-13b-chat-hf":
-                                        pipe = pipeline(
-                                            "text-generation",
-                                            model=model_id,
-                                            tokenizer=tokenizer,
-                                            # torch_dtype="auto",
-                                            trust_remote_code=True,
-                                            device_map="auto",
-                                            num_return_sequences=1,
-                                            eos_token_id=tokenizer.eos_token_id,
-                                            **model_kwargs
-                                        )
-                                    else:
-                                        pipe = pipeline(
-                                            "text-generation",
-                                            model=model_id,
-                                            tokenizer=tokenizer,
-                                            torch_dtype="auto",
-                                            trust_remote_code=True,
-                                            device_map="auto",
-                                            num_return_sequences=1,
-                                            eos_token_id=tokenizer.eos_token_id,
-                                            **model_kwargs
-                                        )
+                                        if model_id == "meta-llama/Llama-2-13b-chat-hf":
+                                            pipe = pipeline(
+                                                "text-generation",
+                                                model=model_id,
+                                                tokenizer=tokenizer,
+                                                # torch_dtype="auto",
+                                                trust_remote_code=True,
+                                                device_map="auto",
+                                                num_return_sequences=1,
+                                                eos_token_id=tokenizer.eos_token_id,
+                                                **model_kwargs
+                                            )
+                                        else:
+                                            pipe = pipeline(
+                                                "text-generation",
+                                                model=model_id,
+                                                tokenizer=tokenizer,
+                                                torch_dtype="auto",
+                                                trust_remote_code=True,
+                                                device_map="auto",
+                                                num_return_sequences=1,
+                                                eos_token_id=tokenizer.eos_token_id,
+                                                **model_kwargs
+                                            )
 
-                                    local_llm = HuggingFacePipeline(
-                                        pipeline=pipe)
+                                        local_llm = HuggingFacePipeline(
+                                            pipeline=pipe)
 
-                                    st.write('Model loaded')
+                                    status.update(
+                                        label='Model %s loaded' % model_id, state="complete")
 
                                 llm_chain = LLMChain(
                                     llm=local_llm, prompt=prompt_template)
@@ -336,40 +337,41 @@ def main():
                                            "Output: " + output)
                             elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
                                 if pipe is None:
-                                    st.write('Loading model %s' % model_id)
-                                    tokenizer = AutoTokenizer.from_pretrained(
-                                        model_id)
+                                    with st.status('Loading model %s' % model_id) as status:
+                                        tokenizer = AutoTokenizer.from_pretrained(
+                                            model_id)
 
-                                    if model_id in ['google/flan-t5-large', 'google/flan-t5-xl']:
-                                        model = AutoModelForSeq2SeqLM.from_pretrained(
-                                            model_id, load_in_8bit=False, device_map='auto')
-                                        pipe = pipeline(
-                                            "text2text-generation",
-                                            model=model_id,
-                                            tokenizer=tokenizer,
-                                            torch_dtype="auto",
-                                            trust_remote_code=True,
-                                            device_map="auto",
-                                            num_return_sequences=1,
-                                            eos_token_id=tokenizer.eos_token_id,
-                                            **model_kwargs
-                                        )
-                                    elif model_id in ['tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
-                                        pipe = pipeline(
-                                            "text-generation",
-                                            model=model_id,
-                                            tokenizer=tokenizer,
-                                            torch_dtype="auto",
-                                            trust_remote_code=True,
-                                            device_map="auto",
-                                            num_return_sequences=1,
-                                            eos_token_id=tokenizer.eos_token_id,
-                                            **model_kwargs
-                                        )
+                                        if model_id in ['google/flan-t5-large', 'google/flan-t5-xl']:
+                                            model = AutoModelForSeq2SeqLM.from_pretrained(
+                                                model_id, load_in_8bit=False, device_map='auto')
+                                            pipe = pipeline(
+                                                "text2text-generation",
+                                                model=model_id,
+                                                tokenizer=tokenizer,
+                                                torch_dtype="auto",
+                                                trust_remote_code=True,
+                                                device_map="auto",
+                                                num_return_sequences=1,
+                                                eos_token_id=tokenizer.eos_token_id,
+                                                **model_kwargs
+                                            )
+                                        elif model_id in ['tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
+                                            pipe = pipeline(
+                                                "text-generation",
+                                                model=model_id,
+                                                tokenizer=tokenizer,
+                                                torch_dtype="auto",
+                                                trust_remote_code=True,
+                                                device_map="auto",
+                                                num_return_sequences=1,
+                                                eos_token_id=tokenizer.eos_token_id,
+                                                **model_kwargs
+                                            )
 
-                                    local_llm = HuggingFacePipeline(
-                                        pipeline=pipe)
-                                    st.write('Model %s loaded' % model_id)
+                                        local_llm = HuggingFacePipeline(
+                                            pipeline=pipe)
+                                        status.update(
+                                            label='Model %s loaded' % model_id, state="complete")
 
                                 llm_chain = LLMChain(
                                     llm=local_llm, prompt=prompt_template)
@@ -382,52 +384,53 @@ def main():
                                            "Output: " + output)
                             elif model_id == "mosaicml/mpt-7b-instruct":
                                 if pipe is None:
-                                    st.write('Loading model %s' % model_id)
+                                    with st.status('Loading model %s' % model_id) as status:
 
-                                    model = AutoModelForCausalLM.from_pretrained(
-                                        model_id,
-                                        trust_remote_code=True,
-                                        torch_dtype=torch.bfloat16,
-                                        max_seq_len=2048,
-                                        device_map="auto"
-                                    )
+                                        model = AutoModelForCausalLM.from_pretrained(
+                                            model_id,
+                                            trust_remote_code=True,
+                                            torch_dtype=torch.bfloat16,
+                                            max_seq_len=2048,
+                                            device_map="auto"
+                                        )
 
-                                    # MPT-7B model was trained using the EleutherAI/gpt-neox-20b tokenizer
-                                    tokenizer = AutoTokenizer.from_pretrained(
-                                        "EleutherAI/gpt-neox-20b")
+                                        # MPT-7B model was trained using the EleutherAI/gpt-neox-20b tokenizer
+                                        tokenizer = AutoTokenizer.from_pretrained(
+                                            "EleutherAI/gpt-neox-20b")
 
-                                    # mtp-7b is trained to add "<|endoftext|>" at the end of generations
-                                    stop_token_ids = tokenizer.convert_tokens_to_ids(
-                                        ["<|endoftext|>"])
-                                    # define custom stopping criteria object
+                                        # mtp-7b is trained to add "<|endoftext|>" at the end of generations
+                                        stop_token_ids = tokenizer.convert_tokens_to_ids(
+                                            ["<|endoftext|>"])
+                                        # define custom stopping criteria object
 
-                                    class StopOnTokens(StoppingCriteria):
-                                        def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-                                            for stop_id in stop_token_ids:
-                                                if input_ids[0][-1] == stop_id:
-                                                    return True
-                                            return False
-                                    stopping_criteria = StoppingCriteriaList(
-                                        [StopOnTokens()])
+                                        class StopOnTokens(StoppingCriteria):
+                                            def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
+                                                for stop_id in stop_token_ids:
+                                                    if input_ids[0][-1] == stop_id:
+                                                        return True
+                                                return False
+                                        stopping_criteria = StoppingCriteriaList(
+                                            [StopOnTokens()])
 
-                                    pipe = pipeline(
-                                        task='text-generation',
-                                        model=model,
-                                        tokenizer=tokenizer,
-                                        torch_dtype="auto",
-                                        device_map="auto",
-                                        num_return_sequences=1,
-                                        eos_token_id=tokenizer.eos_token_id,
-                                        **model_kwargs,
-                                        return_full_text=True,  # langchain expects the full text
-                                        stopping_criteria=stopping_criteria,  # without this model will ramble
-                                        repetition_penalty=1.1  # without this output begins repeating
-                                    )
+                                        pipe = pipeline(
+                                            task='text-generation',
+                                            model=model,
+                                            tokenizer=tokenizer,
+                                            torch_dtype="auto",
+                                            device_map="auto",
+                                            num_return_sequences=1,
+                                            eos_token_id=tokenizer.eos_token_id,
+                                            **model_kwargs,
+                                            return_full_text=True,  # langchain expects the full text
+                                            stopping_criteria=stopping_criteria,  # without this model will ramble
+                                            repetition_penalty=1.1  # without this output begins repeating
+                                        )
 
-                                    local_llm = HuggingFacePipeline(
-                                        pipeline=pipe)
+                                        local_llm = HuggingFacePipeline(
+                                            pipeline=pipe)
 
-                                    st.write('Model %s loaded' % model_id)
+                                    status.update(
+                                        label='Model %s loaded' % model_id, state="complete")
 
                                 llm_chain = LLMChain(
                                     llm=local_llm, prompt=prompt_template)
