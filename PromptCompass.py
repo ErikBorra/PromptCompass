@@ -44,6 +44,7 @@ def main():
     st.markdown(
         '''
         [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/ErikBorra/PromptCompass)
+        [![DOI](https://zenodo.org/badge/649855474.svg)](https://zenodo.org/badge/latestdoi/649855474)
         ''', unsafe_allow_html=True)
     # load available models
     model_with_names = [

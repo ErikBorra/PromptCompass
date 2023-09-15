@@ -1,5 +1,7 @@
 # PromptCompass
-A Tool for Navigating Prompts for Computational Social Science and Digital Humanities.
+
+[![DOI](https://zenodo.org/badge/649855474.svg)](https://zenodo.org/badge/latestdoi/649855474)
+[![Requires Python 3.9](https://img.shields.io/badge/py-v3.9-blue)](https://www.python.org/)
 
 Prompt Compass is a tool designed to leverage Language Learning Models (LLMs) in digital research tasks. It accomplishes this by offering access to diverse LLMs, supplying a library of prompts for digital research, and enabling users to apply these prompts to a series of inputs.
 
