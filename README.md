@@ -34,6 +34,8 @@ Then navigate your browser to the URL shown
     - It's important to remember to incorporate {user_input} within your custom prompt. This will act as a placeholder that will be filled by each line of your input as the script iterates over them.
 - Importing CSV Files
     - If you have data in a CSV format, you can easily upload it for analysis. Following the upload, you will have the option to choose a specific column for analysis. The script will then navigate through each row, replacing the {user_input} in your text with the corresponding cell from the selected column in each row.
+- Required VRAM 
+    - You can use https://huggingface.co/spaces/hf-accelerate/model-memory-usage to get a good idea of how much VRAM you need for a specific model and with what precision (i.e. whether you can run it on your own machine).
 - Errors
     - If you get an error like the following `pandas.errors.ParserError: Error tokenizing data. C error: Expected 1 fields in line 13, saw 3` your CSV probably does not have a header row.
     - If you get an error like the following `Retrying langchain.chat_models.openai.ChatOpenAI.completion_with_retry.<locals>._completion_with_retry in 16.0 seconds as it raised RateLimitError: Rate limit reached for default-gpt-3.5-turbo-16k in organization org-WlgvnCb1Wg24MDcyDC7Y58bK on requests per min. Limit: 3 / min. Please try again in 20s. Contact us through our help center at` `[help.openai.com](http://help.openai.com/)` `if you continue to have issues. Please add a payment method to your account to increase your rate limit. Visit` `[https://platform.openai.com/account/billing](https://platform.openai.com/account/billing)` `to add a payment method..` consider adding a payment method to your openai account
