@@ -25,6 +25,14 @@
             "resource": "https://huggingface.co/mosaicml/mpt-7b-instruct"
         },
         {
+            "name": "databricks/dolly-v2-7b",
+            "resource": "https://huggingface.co/databricks/dolly-v2-7b"
+        },
+        {
+            "name": "databricks/dolly-v2-3b",
+            "resource": "https://huggingface.co/databricks/dolly-v2-3b"
+        },
+        {
             "name": "gpt-4",
             "resource": "https://platform.openai.com/docs/models/gpt-4"
         },
@@ -55,14 +63,6 @@
         {
             "name": "text-ada-001",
             "resource": "https://platform.openai.com/docs/models/gpt-3-5"
-        },
-        {
-            "name": "tiiuae/falcon-7b",
-            "resource": "https://huggingface.co/tiiuae/falcon-7b"
-        },
-        {
-            "name": "mosaicml/mpt-7b",
-            "resource": "https://huggingface.co/mosaicml/mpt-7b"
         },
         {
             "name": "tiiuae/falcon-40b-instruct",

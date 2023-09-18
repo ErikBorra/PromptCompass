@@ -279,7 +279,7 @@ def main():
                                                "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                                "Output: " + output)
                                     st.text(cb)
-                            elif model_id in ['tiiuae/falcon-7b', 'mosaicml/mpt-7b', 'meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
+                            elif model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
                                 if pipe == None:
                                     with st.status('Loading model %s' % model_id) as status:
                                         # to use the llama-2 models,
@@ -335,7 +335,7 @@ def main():
                                 st.success("Input:  " + user_input + "  \n\n " +
                                            "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
-                            elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
+                            elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct', 'databricks/dolly-v2-3b', 'databricks/dolly-v2-7b']:
                                 if pipe is None:
                                     with st.status('Loading model %s' % model_id) as status:
                                         tokenizer = AutoTokenizer.from_pretrained(
@@ -355,7 +355,8 @@ def main():
                                                 eos_token_id=tokenizer.eos_token_id,
                                                 **model_kwargs
                                             )
-                                        elif model_id in ['tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
+                                        # elif model_id in ['tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct']:
+                                        else:
                                             pipe = pipeline(
                                                 "text-generation",
                                                 model=model_id,
