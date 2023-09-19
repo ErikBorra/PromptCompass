@@ -60,8 +60,8 @@ def main():
     if not st.session_state.get('previous_model'):
         st.session_state['previous_model'] = model_with_names[0]['name']
 
-    st.caption("Model info: [" + input_values['model']
-               ['name']+"]("+input_values['model']['resource']+")")
+    st.caption(f"Model info: [{input_values['model']['name']}]({input_values['model']['resource']})" + (
+        f". {input_values['model']['comment']}" if 'comment' in input_values['model'] else ""))
 
     # ask for open ai key if no key is set in .env
     if input_values['model']['resource'] in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4"]:
@@ -252,7 +252,7 @@ def main():
 
                             # set up and run the model
                             model_id = input_values['model']['name']
-                            if model_id in ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001', 'gpt-4']:
+                            if model_id in ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001', 'gpt-4', 'gpt-3.5-turbo-instruct', 'babbage-002', 'davinci-002']:
                                 if open_ai_key is None or open_ai_key == "":
                                     st.error(
                                         "Please provide an Open AI API Key")

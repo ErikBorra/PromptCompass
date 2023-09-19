@@ -45,24 +45,41 @@
             "resource": "https://platform.openai.com/docs/models/gpt-3-5"
         },
         {
-            "name": "text-davinci-003",
+            "name": "gpt-3.5-turbo-instruct",
             "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
+            "name": "babbage-002",
+            "resource": "https://platform.openai.com/docs/models/gpt-base"
+        },
+        {
+            "name": "davinci-002",
+            "resource": "https://platform.openai.com/docs/models/gpt-base"
+        },
+        {
+            "name": "text-davinci-003",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5",
+            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
         },
         {
             "name": "text-davinci-002",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5",
+            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
         },
         {
             "name": "text-curie-001",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+            "resource": "https://platform.openai.com/docs/models/gpt-3",
+            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
         },
         {
             "name": "text-babbage-001",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+            "resource": "https://platform.openai.com/docs/models/gpt-3",
+            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
         },
         {
             "name": "text-ada-001",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+            "resource": "https://platform.openai.com/docs/models/gpt-3",
+            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
         },
         {
             "name": "tiiuae/falcon-40b-instruct",
