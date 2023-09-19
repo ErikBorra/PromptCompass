@@ -2,6 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/649855474.svg)](https://zenodo.org/badge/latestdoi/649855474)
 [![Requires Python 3.9](https://img.shields.io/badge/py-v3.9-blue)](https://www.python.org/)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-informational)](https://github.com/ErikBorra/PromptCompass/blob/main/LICENSE)
 
 Prompt Compass is a tool designed to leverage Language Learning Models (LLMs) in digital research tasks. It accomplishes this by offering access to diverse LLMs, supplying a library of prompts for digital research, and enabling users to apply these prompts to a series of inputs.
 
@@ -36,7 +37,15 @@ Then navigate your browser to the URL shown
     - If you have data in a CSV format, you can easily upload it for analysis. Following the upload, you will have the option to choose a specific column for analysis. The script will then navigate through each row, replacing the {user_input} in your text with the corresponding cell from the selected column in each row.
 - Required VRAM 
     - You can use https://huggingface.co/spaces/hf-accelerate/model-memory-usage to get a good idea of how much VRAM you need for a specific model and with what precision (i.e. whether you can run it on your own machine).
-- Errors
-    - If you get an error like the following `pandas.errors.ParserError: Error tokenizing data. C error: Expected 1 fields in line 13, saw 3` your CSV probably does not have a header row.
-    - If you get an error like the following `Retrying langchain.chat_models.openai.ChatOpenAI.completion_with_retry.<locals>._completion_with_retry in 16.0 seconds as it raised RateLimitError: Rate limit reached for default-gpt-3.5-turbo-16k in organization org-WlgvnCb1Wg24MDcyDC7Y58bK on requests per min. Limit: 3 / min. Please try again in 20s. Contact us through our help center at` `[help.openai.com](http://help.openai.com/)` `if you continue to have issues. Please add a payment method to your account to increase your rate limit. Visit` `[https://platform.openai.com/account/billing](https://platform.openai.com/account/billing)` `to add a payment method..` consider adding a payment method to your openai account
-    - If you encounter an error message stating 'gpt-4' model not found, it's recommended to verify that you've completed at least one successful transaction through the OpenAI developer platform. This error may arise if a payment has not been successfully processed there.
+- Error messages
+    - If you get a message such as `pandas.errors.ParserError: Error tokenizing data. C error: Expected 1 fields in line 13, saw 3` your CSV probably does not have a header row.
+    - If you get a message such as `Retrying langchain.chat_models.openai.ChatOpenAI.completion_with_retry.<locals>._completion_with_retry in 16.0 seconds as it raised RateLimitError: Rate limit reached for default-gpt-3.5-turbo-16k in organization org-WlgvnCb1Wg24MDcyDC7Y58bK on requests per min. Limit: 3 / min. Please try again in 20s. Contact us through our help center at` `[help.openai.com](http://help.openai.com/)` `if you continue to have issues. Please add a payment method to your account to increase your rate limit. Visit` `[https://platform.openai.com/account/billing](https://platform.openai.com/account/billing)` `to add a payment method..` consider adding a payment method to your openai account
+    - If you encounter a message stating 'gpt-4' model not found, it's recommended to verify that you've completed at least one successful transaction through the OpenAI developer platform. This error may arise if a payment has not been successfully processed there.
+
+## Credits and license
+
+Erik Borra spearheads the development of Prompt Compass, a project sustained with the support of the Dutch PDI-SSH initiative as part of the CAT4SMR project. 
+
+Prompt Compass is licensed under the terms of the Apache 2.0 license; for further details, please refer to the LICENSE file.
+
+When utilizing Prompt Compass in academic projects, please cite it using the [Zenodo DOI](https://zenodo.org/badge/latestdoi/649855474).
