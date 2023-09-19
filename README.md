@@ -28,6 +28,10 @@ To use the llama-2 models, you first need to apply for access to the llama-2 mod
 
 Then navigate your browser to the URL shown
 
+## Feature requests
+
+Proposals for new features, models, or prompts can be submitted through GitHub issues.
+
 ## FAQ
 
 - Creating Custom Prompts
