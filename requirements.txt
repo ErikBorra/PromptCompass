@@ -3,6 +3,7 @@ python_dotenv
 langchain
 openai
 
+torchvision
 tiktoken
 transformers
 torch
