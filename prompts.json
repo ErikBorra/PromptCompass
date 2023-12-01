@@ -383,6 +383,132 @@
             "location_of_input": "after"
         },
         {
+            "name": "summarization",
+            "prompt": [
+                "Article: {user_input}",
+                "",
+                "You will generate increasingly concise, entity-dense summaries of the above Article.",
+                "",
+                "Repeat the following 2 steps 5 times:",
+                "",
+                "Step 1: Identify 1-3 informative entities (\";\" delimited) from the Article which are missing from the previously generated summary.",
+                "Step 2: Write a new denser summary of identical length which covers every entity and detail from the previous summary plus the Missing Entities.",
+                "",
+                "A Missing Entity is:",
+                "- Relevant: to the main story",
+                "- Specific: descriptive yet concise (5 words or fewer).",
+                "- Novel: not in the previous summary.",
+                "- Faithful: present in the Article.",
+                "- Anywhere: located anywhere in the Article.",
+                "",
+                "Guidelines:",
+                "- The first summary should be long (4-5 sentences, ~80 words), yet highly non-specific, containing little information beyond the entities marked as missing. Use overly verbose language and fillers (e.g., \"this article discusses\") to reach ~80 words.",
+                "- Make every word count: re-write the previous summary to improve flow and make space for additional entities.",
+                "- Make space with fusion, compression, and removal of uninformative phrases like \"the article discusses\".",
+                "- The summaries should become highly dense and concise, yet self-contained, e.g., easily understood without the Article.",
+                "- Missing entities can appear anywhere in the new summary.",
+                "- Never drop entities from the previous summary. If space cannot be made, add fewer new entities.",
+                "",
+                "Remember: Use the exact same number of words for each summary.",
+                "",
+                "Answer in JSON. The JSON should be a list (length 5) of dictionaries whose keys are \"Missing_Entities\" and \"Denser_Summary\"."
+            ],
+            "authors": "Adams et al. (2023)",
+            "paper": "http://arxiv.org/abs/2309.04269",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "BiasBlocker",
+            "prompt": [
+                "Transform the following biased sentence into an unbiased sentence from a news article by removing any subjective language or discriminatory undertones without changing its semantic meaning:",
+                "",
+                "Biased sentence:",
+                "{user_input}",
+                "",
+                "Unbiased sentence:"
+            ],
+            "authors": "Nguyen et al. (2023)",
+            "paper": "https://www.journalismai.info/blog/we-asked-a-language-model-to-identify-racism-and-it-tried-to-erase-baby-hitler",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "Social network inference from literary texts",
+            "prompt": [
+                "List all pairs of named characters who directly converse in this Text. Format as TSV, no heading. Solve pronoun references, merge references to the same person into name, standardize names. List each pair ONLY once, do NOT repeat listed pairs. Omit people who are just mentioned but do not converse. ONLY list pairs who directly interact.",
+                "",
+                "Text: {user_input}"
+            ],
+            "authors": "Karjus (2023)",
+            "paper": "https://arxiv.org/abs/2309.14379",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "rumour stance",
+            "prompt": [
+                "You need to annotate a response into one of four rumour stance categories: support, deny, query, or comment. Support: the author of the response supports the veracity of the rumour. Deny: the author of the response denies the veracity of the rumour. Query: the author of the response asks for additional evidence in relation to the veracity of the rumour. Comment: the author of the response makes their own comment without a clear contribution to assessing the veracity of the rumour.",
+                "",
+                "Response: {user_input}"
+            ],
+            "authors": "Mu et al. (2023)",
+            "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "vaccine Stance",
+            "prompt": [
+                "You need to annotate a tweet into one of three stance categoies: pro vaccine, anti vaccine, or neutral. Tweets that have been assigned to the class pro vaccine express a positive opinion regarding the vaccination. Tweets belonging to the anti vaccine vaccination class express a negative opinion towards COVID-19 vaccination. The neutral class mainly includes news related to the development of vaccines, tweets that do not express a clear opinion, such as questions regarding the vaccine, informative tweets concerning vaccination.",
+                "",
+                "Tweet: {user_input}"
+            ],
+            "authors": "Mu et al. (2023)",
+            "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "complaint",
+            "prompt": [
+                "Complaining is a basic speech act used to express a negative mismatch between reality and expectations towards a state of affairs, product, organization or event. Key to the definition of complaints is the expression of the breach of expectations. Is the following text a complaint?",
+                "",
+                "Text: {user_input}"
+            ],
+            "authors": "Mu et al. (2023)",
+            "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "bragging",
+            "prompt": [
+                "You need to identify whether or not a tweet includes a bragging statement. Only reply yes or no. Bragging is a speech act which explicitly or implicitly attributes credit to the speaker for some ‘good’ (possession, accomplishment, skill, etc.) which is positively valued by the speaker and the potential audience. As such, bragging includes announcements of accomplishments, and explicit positive evaluations of some aspect of self. A bragging statement should clearly express what the author is bragging about (i.e. the target of bragging).",
+                "",
+                "Statement: {user_input}"
+            ],
+            "authors": "Mu et al. (2023)",
+            "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "Sarcasm",
+            "prompt": [
+                "Annotate whether a tweet is Sarcasm or non-Sarcasm. Sarcasm is a form of verbal irony that occurs when there is a discrepancy between the literal and intended meanings of an utterance. Through this discrepancy, the speaker expresses their position towards a prior proposition, often in the form of surface contempt or derogation.",
+                "",
+                "Tweet: {user_input}"
+            ],
+            "authors": "Mu et al. (2023)",
+            "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "Hate speech",
+            "prompt": [
+                "Annotate a tweet into one of three categoies: racism, sexism, non-offensive . A tweet is offensive if it: 1. uses a sexist or racial slur. 2. attacks a minority. 3. seeks to silence a minority. 4. criticizes a minority (without a well founded argument). 5. promotes, but does not directly use, hate speech or violent crime. 6. criticizes a minority and uses a straw man argument. 7. blatantly misrepresents truth or seeks to distort views on a minority with unfounded claims. 8. shows support of problematic hash tags. E.g. “#BanIslam”, “#whoriental”, “#whitegenocide”. 9. negatively stereotypes a minority. 10. defends xenophobia or sexism. 11. contains a screen name that is offensive, as per the previous criteria, the tweet is ambiguous (at best), and the tweet is on a topic that satisfies any of the above criteria.",
+                "",
+                "Tweet: {user_input}"
+            ],
+            "authors": "Mu et al. (2023)",
+            "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
             "name": "custom - instruct",
             "prompt": [
                 "Prompt: YOUR PROMPT HERE",
