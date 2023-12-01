@@ -33,7 +33,15 @@
             "resource": "https://huggingface.co/databricks/dolly-v2-3b"
         },
         {
+            "name": "gpt-4-1106-preview",
+            "resource": "https://platform.openai.com/docs/models/gpt-4"
+        },
+        {
             "name": "gpt-4",
+            "resource": "https://platform.openai.com/docs/models/gpt-4"
+        },
+        {
+            "name": "gpt-4-32k",
             "resource": "https://platform.openai.com/docs/models/gpt-4"
         },
         {
