@@ -71,6 +71,8 @@ def main():
         else:
             open_ai_key = os.getenv("OPENAI_API_KEY")
 
+    # set default values
+    do_sample = False
     temperature = 0.001
     top_p = -1
     max_new_tokens = -1
@@ -107,7 +109,7 @@ def main():
             """
         **Top P**: Also known as "nucleus sampling", is an alternative to temperature that can also be used to control the randomness of the model's responses.
         It essentially trims the less likely options in the model's distribution of possible responses. Possible values lie between 0.0 and 1.0. 
-        A value of -1 means the parameter will not be specified.
+        A value of -1 means the parameter will not be specified. Only applies if do_sample=True.
         """
         )
         top_p = st.number_input('Set Top-P', min_value=-
@@ -144,7 +146,6 @@ def main():
         allgood = False
     if 0 <= temperature <= 2:
         model_kwargs['temperature'] = temperature
-
     if not (0 <= top_p <= 1 or top_p == -1):
         st.error(
             "Top P value must be between 0 and 1. Choose -1 if you want to use the default model value.")
@@ -244,7 +245,9 @@ def main():
                         # loop over user values in prompt
                         for key, user_input in enumerate(input_values['user']):
 
-                            num_tokens = None
+                            num_prompt_tokens = None
+                            num_completion_tokens = None
+                            cost = None
 
                             user_input = str(user_input).strip()
                             if user_input == "" or user_input == "nan":
@@ -270,15 +273,13 @@ def main():
 
                                     output = llm_chain.run(user_input)
 
-                                    encoding = tiktoken.encoding_for_model(
-                                        model_id)
-                                    num_tokens = len(encoding.encode(
-                                        prompt_template.format(user_input=user_input)))
-
                                     st.success("Input:  " + user_input + "  \n\n " +
-                                               "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                                "Output: " + output)
                                     st.text(cb)
+                                    num_prompt_tokens = cb.prompt_tokens
+                                    num_completion_tokens = cb.completion_tokens
+                                    cost = cb.total_cost
+
                             elif model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
                                 if pipe == None:
                                     with st.status('Loading model %s' % model_id) as status:
@@ -329,11 +330,7 @@ def main():
 
                                 output = llm_chain.run(user_input)
 
-                                num_tokens = len(tokenizer.tokenize(
-                                    prompt_template.format(user_input=user_input)))
-
                                 st.success("Input:  " + user_input + "  \n\n " +
-                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
                             elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct', 'databricks/dolly-v2-3b', 'databricks/dolly-v2-7b']:
                                 if pipe is None:
@@ -378,10 +375,8 @@ def main():
                                     llm=local_llm, prompt=prompt_template)
 
                                 output = llm_chain.run(user_input)
-                                num_tokens = len(tokenizer.tokenize(
-                                    prompt_template.format(user_input=user_input)))
+
                                 st.success("Input:  " + user_input + "  \n\n " +
-                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
                             elif model_id == "mosaicml/mpt-7b-instruct":
                                 if pipe is None:
@@ -438,11 +433,7 @@ def main():
 
                                 output = llm_chain.run(user_input)
 
-                                num_tokens = len(tokenizer.tokenize(
-                                    prompt_template.format(user_input=user_input)))
-
                                 st.success("Input:  " + user_input + "  \n\n " +
-                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
                             elif model_id == "ehartford/dolphin-2.1-mistral-7b" or model_id == "lvkaokao/mistral-7b-finetuned-orca-dpo-v2" or model_id == "lmsys/vicuna-13b-v1.5":
                                 if pipe is None:
@@ -485,37 +476,48 @@ def main():
 
                                 output = llm_chain.run(user_input)
 
-                                num_tokens = len(tokenizer.tokenize(
-                                    prompt_template.format(user_input=user_input)))
-
                                 st.success("Input:  " + user_input + "  \n\n " +
-                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
                                            "Output: " + output)
                             else:
                                 st.error("Model %s not found" % model_id)
                                 exit(1)
 
+                            if not num_prompt_tokens or not num_completion_tokens:
+                                num_prompt_tokens = len(tokenizer.tokenize(
+                                    prompt_template.format(user_input=user_input)))
+                                num_completion_tokens = len(tokenizer.tokenize(
+                                    output))
+
                             # add output to dataframe
                             data.loc[key, 'output'] = output
                             data.loc[key, 'llm'] = model_id
-                            data.loc[key, 'prompt timestamp'] = time.strftime(
-                                "%Y-%m-%d %H:%M:%S", time.localtime())
                             data.loc[key, 'prompt name'] = task['name']
                             data.loc[key, 'prompt authors'] = task['authors']
-                            data.loc[key, '# input tokens'] = str(
-                                int(num_tokens))
                             data.loc[key, 'prompt'] = template
-                            if "temperature" in model_kwargs:
-                                data.loc[key,
-                                         'temperature'] = model_kwargs['temperature']
-                            if "top_p" in model_kwargs:
-                                data.loc[key, 'top_p'] = model_kwargs['top_p']
+                            data.loc[key, 'timestamp'] = time.strftime(
+                                "%Y-%m-%d %H:%M:%S", time.localtime())
+                            data.loc[key, '# prompt tokens'] = str(
+                                int(num_prompt_tokens))
+                            data.loc[key, '# completion tokens'] = str(
+                                int(num_completion_tokens))
                             if "max_tokens" in model_kwargs:
                                 data.loc[key,
                                          'max_tokens'] = int(model_kwargs['max_tokens'])
                             if "do_sample" in model_kwargs:
                                 data.loc[key,
                                          'do_sample'] = int(model_kwargs['do_sample'])
+                            if "temperature" in model_kwargs:
+                                data.loc[key,
+                                         'temperature'] = model_kwargs['temperature']
+                            if "top_p" in model_kwargs:
+                                data.loc[key,
+                                         'top_p'] = model_kwargs['top_p']
+                            if cost is not None:
+                                data.loc[key, 'cost'] = cost
+
+                        st.subheader("Results")
+                        st.dataframe(data, column_config={},
+                                     hide_index=True)
 
                         # make output available as csv
                         csv = data.to_csv(index=False).encode('utf-8')
@@ -526,8 +528,6 @@ def main():
                             "text/csv",
                             key='download-csv'
                         )
-
-                        # st.write(vars(pipe)) # print all variables set in the pipeline
 
                     end_time = time.time()
                     elapsed_time = end_time - start_time
