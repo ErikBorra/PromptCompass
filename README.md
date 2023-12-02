@@ -6,9 +6,9 @@
 
 Prompt Compass is a tool designed to leverage Language Learning Models (LLMs) in digital research tasks. It accomplishes this by offering access to diverse LLMs, supplying a library of prompts for digital research, and enabling users to apply these prompts to a series of inputs.
 
-The tool offers two categories of LLMs: local LLMs and platform APIs. Local LLMs can be used to provide stable and reproducible results, facilitate in-depth analysis, and support a robust interpretation. These LLMs are optimized to run on a GPU with 24GB of RAM. Platform APIs, however, unlock the power of more advanced and sophisticated LLMs.
+The tool offers two categories of LLMs: local LLMs and platform APIs. Local LLMs can be used to provide stable and reproducible results, facilitate in-depth analysis, and support a robust interpretation. The provided LLMs are chosen as they rank high on [Huggingface's Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) and [HELM](https://crfm.stanford.edu/helm/latest/), and because they run on a single GPU with 24GB of RAM. While platform APIs unlock the power of more advanced and sophisticated LLMs, currently only APIs available in the EU are included.
 
-Our library of prompts comprises prompts extracted from academic literature and other research, each of which is linked to its respective source. This feature enables you to examine the objectives and effectiveness of each prompt. It is also possible to create custom prompts.
+The library of prompts comprises prompts extracted from academic literature and other research, each of which is linked to its respective source. This feature enables you to examine the objectives and effectiveness of each prompt, and with which LLM they were used. It is also possible to create custom prompts.
 
 The tool accepts user inputs either as text lines or CSV files, to be processed with the chosen LLM and prompt, with each line treated separately.
 
