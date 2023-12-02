@@ -39,7 +39,7 @@ def main():
     # title
     st.title("Prompt Compass")
     st.subheader(
-        "A Tool for Navigating Prompts for Computational Social Science and Digital Humanities")
+        "A Tool for Navigating LLMs and Prompts for Computational Social Science and Digital Humanities Research")
     # Add Link to your repo
     st.markdown(
         '''
@@ -402,8 +402,8 @@ def main():
                                         # mtp-7b is trained to add "<|endoftext|>" at the end of generations
                                         stop_token_ids = tokenizer.convert_tokens_to_ids(
                                             ["<|endoftext|>"])
-                                        # define custom stopping criteria object
 
+                                        # define custom stopping criteria object
                                         class StopOnTokens(StoppingCriteria):
                                             def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
                                                 for stop_id in stop_token_ids:
@@ -425,6 +425,53 @@ def main():
                                             return_full_text=True,  # langchain expects the full text
                                             stopping_criteria=stopping_criteria,  # without this model will ramble
                                             repetition_penalty=1.1  # without this output begins repeating
+                                        )
+
+                                        local_llm = HuggingFacePipeline(
+                                            pipeline=pipe)
+
+                                    status.update(
+                                        label='Model %s loaded' % model_id, state="complete")
+
+                                llm_chain = LLMChain(
+                                    llm=local_llm, prompt=prompt_template)
+
+                                output = llm_chain.run(user_input)
+
+                                num_tokens = len(tokenizer.tokenize(
+                                    prompt_template.format(user_input=user_input)))
+
+                                st.success("Input:  " + user_input + "  \n\n " +
+                                           "Input tokens (incl. prompt): " + str(num_tokens) + "  \n\n " +
+                                           "Output: " + output)
+                            elif model_id == "ehartford/dolphin-2.1-mistral-7b" or model_id == "lvkaokao/mistral-7b-finetuned-orca-dpo-v2" or model_id == "lmsys/vicuna-13b-v1.5":
+                                if pipe is None:
+                                    with st.status('Loading model %s' % model_id) as status:
+
+                                        model = AutoModelForCausalLM.from_pretrained(
+                                            model_id,
+                                            trust_remote_code=True,
+                                            torch_dtype=torch.bfloat16,
+                                            device_map="auto"
+                                        )
+
+                                        if model_id == "ehartford/dolphin-2.1-mistral-7b":
+                                            tokenizer = AutoTokenizer.from_pretrained(
+                                                model_id, use_fast=False)
+                                        else:
+                                            tokenizer = AutoTokenizer.from_pretrained(
+                                                model_id)
+
+                                        pipe = pipeline(
+                                            task='text-generation',
+                                            model=model,
+                                            tokenizer=tokenizer,
+                                            torch_dtype="auto",
+                                            device_map="auto",
+                                            num_return_sequences=1,
+                                            eos_token_id=tokenizer.eos_token_id,
+                                            **model_kwargs,
+                                            return_full_text=True,  # langchain expects the full text
                                         )
 
                                         local_llm = HuggingFacePipeline(

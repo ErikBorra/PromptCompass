@@ -9,6 +9,14 @@
             "resource": "https://huggingface.co/google/flan-t5-xl"
         },
         {
+            "name": "ehartford/dolphin-2.1-mistral-7b",
+            "resource": "https://huggingface.co/ehartford/dolphin-2.1-mistral-7b"
+        },
+        {
+            "name": "lvkaokao/mistral-7b-finetuned-orca-dpo-v2",
+            "resource": "https://huggingface.co/lvkaokao/mistral-7b-finetuned-orca-dpo-v2"
+        },
+        {
             "name": "meta-llama/Llama-2-7b-chat-hf",
             "resource": "https://huggingface.co/meta-llama/Llama-2-7b-chat-hf"
         },
@@ -23,6 +31,10 @@
         {
             "name": "mosaicml/mpt-7b-instruct",
             "resource": "https://huggingface.co/mosaicml/mpt-7b-instruct"
+        },
+        {
+            "name": "lmsys/vicuna-13b-v1.5",
+            "resource": "https://huggingface.co/lmsys/vicuna-13b-v1.5"
         },
         {
             "name": "databricks/dolly-v2-7b",
@@ -88,10 +100,6 @@
             "name": "text-ada-001",
             "resource": "https://platform.openai.com/docs/models/gpt-3",
             "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
-        },
-        {
-            "name": "tiiuae/falcon-40b-instruct",
-            "resource": "https://huggingface.co/tiiuae/falcon-40b-instruct"
         }
     ],
     "tasks": [
@@ -495,7 +503,7 @@
             "location_of_input": "replace"
         },
         {
-            "name": "Sarcasm",
+            "name": "sarcasm",
             "prompt": [
                 "Annotate whether a tweet is Sarcasm or non-Sarcasm. Sarcasm is a form of verbal irony that occurs when there is a discrepancy between the literal and intended meanings of an utterance. Through this discrepancy, the speaker expresses their position towards a prior proposition, often in the form of surface contempt or derogation.",
                 "",
@@ -506,7 +514,7 @@
             "location_of_input": "replace"
         },
         {
-            "name": "Hate speech",
+            "name": "hate speech",
             "prompt": [
                 "Annotate a tweet into one of three categoies: racism, sexism, non-offensive . A tweet is offensive if it: 1. uses a sexist or racial slur. 2. attacks a minority. 3. seeks to silence a minority. 4. criticizes a minority (without a well founded argument). 5. promotes, but does not directly use, hate speech or violent crime. 6. criticizes a minority and uses a straw man argument. 7. blatantly misrepresents truth or seeks to distort views on a minority with unfounded claims. 8. shows support of problematic hash tags. E.g. “#BanIslam”, “#whoriental”, “#whitegenocide”. 9. negatively stereotypes a minority. 10. defends xenophobia or sexism. 11. contains a screen name that is offensive, as per the previous criteria, the tweet is ambiguous (at best), and the tweet is on a topic that satisfies any of the above criteria.",
                 "",
