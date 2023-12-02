@@ -1,10 +1,10 @@
 import json
 import streamlit as st
+import streamlit_ext as ste
 import os
 import time
 import gc
 import pandas as pd
-import tiktoken
 from dotenv import load_dotenv
 from langchain.chains import LLMChain  # import LangChain libraries
 from langchain.llms import OpenAI  # import OpenAI model
@@ -196,6 +196,7 @@ def main():
 
                 # process the selected column from the dataframe
                 input_values['user'] = data[column_to_extract].tolist()
+                data['user_input'] = input_values['user']
 
         # Determine the output file name
         filename = uploaded_file.name if uploaded_file else 'output.csv'
@@ -521,12 +522,11 @@ def main():
 
                         # make output available as csv
                         csv = data.to_csv(index=False).encode('utf-8')
-                        st.download_button(
+                        ste.download_button(
                             "Download CSV",
                             csv,
                             output_filename,
                             "text/csv",
-                            key='download-csv'
                         )
 
                     end_time = time.time()
