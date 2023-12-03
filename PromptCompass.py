@@ -181,7 +181,8 @@ def main():
             # if the user's input is not a list (e.g. a string), then split it by newlines
             if isinstance(input_values['user'], str):
                 input_values['user'] = input_values['user'].split('\n')
-
+            original_data = pd.DataFrame(
+                input_values['user'], columns=['user_input'])
         else:
             # upload CSV
             uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
