@@ -443,7 +443,7 @@ def main():
 
                                     st.success("Input:  " + user_input + "  \n\n " +
                                                "Output: " + output)
-                                elif model_id == "ehartford/dolphin-2.1-mistral-7b" or model_id == "lvkaokao/mistral-7b-finetuned-orca-dpo-v2" or model_id == "lmsys/vicuna-13b-v1.5":
+                                elif model_id == "ehartford/dolphin-2.1-mistral-7b" or model_id == "lvkaokao/mistral-7b-finetuned-orca-dpo-v2" or model_id == "lmsys/vicuna-13b-v1.5" or model_id == "microsoft/Orca-2-13b":
                                     if pipe is None:
                                         with st.status('Loading model %s' % model_id) as status:
 

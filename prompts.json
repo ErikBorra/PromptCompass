@@ -9,6 +9,10 @@
             "resource": "https://huggingface.co/google/flan-t5-xl"
         },
         {
+            "name": "microsoft/Orca-2-13b",
+            "resource": "https://huggingface.co/microsoft/Orca-2-13b"
+        },
+        {
             "name": "ehartford/dolphin-2.1-mistral-7b",
             "resource": "https://huggingface.co/ehartford/dolphin-2.1-mistral-7b"
         },
