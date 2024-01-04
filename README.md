@@ -15,8 +15,10 @@ The tool accepts user inputs either as text lines or CSV files, to be processed 
 The results are exported in a CSV file, which includes columns specifying the LLM used, its parameters, the prompt employed, and the corresponding output.
 
 ## Install
-```pip install git+https://github.com/huggingface/transformers
-pip install -r requirements.txt```
+```
+pip install git+https://github.com/huggingface/transformers
+pip install -r requirements.txt
+```
 
 `cp .env.example .env`
 And enter your open_ai_key
