@@ -13,3 +13,4 @@ scipy
 
 einops
 xformers
+sentencepiece
