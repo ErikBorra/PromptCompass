@@ -29,6 +29,14 @@
             "resource": "https://huggingface.co/meta-llama/Llama-2-13b-chat-hf"
         },
         {
+            "name": "bigscience/bloomz-7b1",
+            "resource": "https://huggingface.co/bigscience/bloomz-7b1"
+        },
+        {
+            "name": "bigscience/bloomz-mt",
+            "resource": "https://huggingface.co/bigscience/bloomz-7b1-mt"
+        },
+        {
             "name": "tiiuae/falcon-7b-instruct",
             "resource": "https://huggingface.co/tiiuae/falcon-7b-instruct"
         },
@@ -61,6 +69,10 @@
             "resource": "https://platform.openai.com/docs/models/gpt-4"
         },
         {
+            "name": "gpt-3.5-turbo-1106",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
+        },
+        {
             "name": "gpt-3.5-turbo",
             "resource": "https://platform.openai.com/docs/models/gpt-3-5"
         },
@@ -79,31 +91,6 @@
         {
             "name": "davinci-002",
             "resource": "https://platform.openai.com/docs/models/gpt-base"
-        },
-        {
-            "name": "text-davinci-003",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5",
-            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
-        },
-        {
-            "name": "text-davinci-002",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5",
-            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
-        },
-        {
-            "name": "text-curie-001",
-            "resource": "https://platform.openai.com/docs/models/gpt-3",
-            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
-        },
-        {
-            "name": "text-babbage-001",
-            "resource": "https://platform.openai.com/docs/models/gpt-3",
-            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
-        },
-        {
-            "name": "text-ada-001",
-            "resource": "https://platform.openai.com/docs/models/gpt-3",
-            "comment": "This model will be [deprecated on January 4, 2024](https://platform.openai.com/docs/deprecations)."
         }
     ],
     "tasks": [
