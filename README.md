@@ -14,6 +14,8 @@ The tool accepts user inputs either as text lines or CSV files, to be processed 
 
 The results are exported in a CSV file, which includes columns specifying the LLM used, its parameters, the prompt employed, and the corresponding output.
 
+There is also an instruction video: [https://www.youtube.com/watch?v=QR63E5KcBnk](https://www.youtube.com/watch?v=QR63E5KcBnk)
+
 ## Install
 ```
 pip install git+https://github.com/huggingface/transformers
