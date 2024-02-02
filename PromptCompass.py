@@ -263,13 +263,13 @@ def main():
 
                                 # set up and run the model
                                 model_id = input_values['model']['name']
-                                if model_id in ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-32k', 'gpt-3.5-turbo-instruct', 'babbage-002', 'davinci-002']:
+                                if model_id in ['gpt-3.5-turbo-0125', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001', 'gpt-4-0125-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-32k', 'gpt-3.5-turbo-instruct', 'babbage-002', 'davinci-002']:
                                     if open_ai_key is None or open_ai_key == "":
                                         st.error(
                                             "Please provide an Open AI API Key")
                                         exit(1)
                                     with get_openai_callback() as cb:
-                                        if model_id in ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-32k']:
+                                        if model_id in ['gpt-3.5-turbo-0125', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-0125-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-32k']:
                                             llm = ChatOpenAI(
                                                 model=model_id, openai_api_key=open_ai_key, **model_kwargs)
                                         else:
@@ -443,7 +443,7 @@ def main():
 
                                     st.success("Input:  " + user_input + "  \n\n " +
                                                "Output: " + output)
-                                elif model_id == "ehartford/dolphin-2.1-mistral-7b" or model_id == "lvkaokao/mistral-7b-finetuned-orca-dpo-v2" or model_id == "lmsys/vicuna-13b-v1.5" or model_id == "microsoft/Orca-2-13b":
+                                elif model_id == "allenai/OLMo-7B" or model_id == "ehartford/dolphin-2.1-mistral-7b" or model_id == "lvkaokao/mistral-7b-finetuned-orca-dpo-v2" or model_id == "lmsys/vicuna-13b-v1.5" or model_id == "microsoft/Orca-2-13b":
                                     if pipe is None:
                                         with st.status('Loading model %s' % model_id) as status:
 

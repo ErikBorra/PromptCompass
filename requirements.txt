@@ -13,3 +13,5 @@ scipy
 
 einops
 xformers
+
+ai2-olmo

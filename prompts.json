@@ -9,8 +9,8 @@
             "resource": "https://huggingface.co/google/flan-t5-xl"
         },
         {
-            "name": "microsoft/Orca-2-13b",
-            "resource": "https://huggingface.co/microsoft/Orca-2-13b"
+            "name": "allenai/OLMo-7B",
+            "resource": "https://huggingface.co/allenai/OLMo-7B"
         },
         {
             "name": "ehartford/dolphin-2.1-mistral-7b",
@@ -19,6 +19,10 @@
         {
             "name": "lvkaokao/mistral-7b-finetuned-orca-dpo-v2",
             "resource": "https://huggingface.co/lvkaokao/mistral-7b-finetuned-orca-dpo-v2"
+        },
+        {
+            "name": "microsoft/Orca-2-13b",
+            "resource": "https://huggingface.co/microsoft/Orca-2-13b"
         },
         {
             "name": "meta-llama/Llama-2-7b-chat-hf",
@@ -49,6 +53,10 @@
             "resource": "https://huggingface.co/databricks/dolly-v2-3b"
         },
         {
+            "name": "gpt-4-0125-preview",
+            "resource": "https://platform.openai.com/docs/models/gpt-4"
+        },
+        {
             "name": "gpt-4-1106-preview",
             "resource": "https://platform.openai.com/docs/models/gpt-4"
         },
@@ -59,6 +67,10 @@
         {
             "name": "gpt-4-32k",
             "resource": "https://platform.openai.com/docs/models/gpt-4"
+        },
+        {
+            "name": "gpt-3.5-turbo-0125",
+            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
         },
         {
             "name": "gpt-3.5-turbo",
@@ -526,6 +538,70 @@
             ],
             "authors": "Mu et al. (2023)",
             "paper": "https://arxiv.org/pdf/2305.14310.pdf",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "conspiracy theories on tiktok",
+            "prompt": [
+                "Objective: As a media studies scholar specializing in conspiracy theories, your task is to classify entities and themes in TikTok posts to, ultimately, classify them into categories. You will be presented with a transcript of a TikTok video which you need to process as follows.",
+                "Task Steps:",
+                "- Extract Geographical Entities: Identify all continent and country names, including acronyms (e.g., \"USA\").",
+                "- Extract Organizational Names: Include NGOs (e.g., \"World Economic Forum\"), government institutions (e.g. \"NASA\"), religious institutions (e.g., \"the Vatican\"), and secret societies (e.g., \"the Illuminati\").",
+                "- Extract Names of Individuals: Include names, full names, first names, last names, and artistic names.",
+                "- Extract Thematic Terms: Focus on scientific, technological, religious, and supernatural terms (e.g., \"vaccine\",\"bitcoin\", \"Islam\", \"UFO\").",
+                "- Determine whether it is a conspiracy: Determine if the post fits any of the three criteria that define a conspiracy theory: \"everything is connected\", \"everything happens for a reason\", \"nothing is as it seems\", Answer with the word conspiracy if you determine it a conspiracy or an empty string if no conspiracy is found.",
+                "- Classify the conspiracy: Bearing the above information in mind, classify each TikTok post into one of the following conspiracy categories: \"Spirituality and religion\", \"Governments and institutions\", \"Supernatural and fantasy\", \"Popular culture and entertainment\", and \"Technology\". If the post doesn't fit into any of these categories, classify as \"Other\". If there is no conspiracy, classify as \"None\".",
+                "",
+                "Output Format: Generate JSON with columns \"transcript\", \"Geographical entities\", \"Organizational Names\", \"Individual Names\", \"Thematic terms\", \"Conspiracy Classification\", \"Category\".",
+                "",
+                "Note: Apply critical analysis to categorize underlying themes and narratives. Do not provide explanations, only labels.",
+                "",
+                "Transcript:",
+                "##＃",
+                "{user input}",
+                "###"
+            ],
+            "authors": "Fuentes and Borra (2024",
+            "paper": "https://digitalmethods.net/",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "extract narratives",
+            "prompt": [
+                "You're an expert in narratology. Narrative is a series of claims that make up a story that serves a specific purpose. Below is an example of a narrative:",
+                "{",
+                "\"Title\": \"The West controls Ukraine and uses it to its advantage\",",
+                "\"Characters\": {",
+                "\"West\": \"Potentially referring to Western countries or alliances like NATO\",",
+                "\"Ukraine\": \"The nation caught in the implied manipulation or control\"",
+                "},",
+                "\"Plot\": \"A suggestion that Ukraine is not acting independently but is being manipulated or controlled by Western powers\",",
+                "\"Point_of_View\": \"The narrative may be presented from a perspective that is critical of the West and sympathetic to others who oppose Western influence\"",
+                "}",
+                "Extract narratives for each of the paragraphs below. For each narrative, attribute post ids that talk about it. Generate a JSON with one narrative per line, with columns \"Title\", \"Characters\", \"Plot\", \"Point of View\".\",",
+                "",
+                "Text: {user_input}"
+            ],
+            "authors": "Dasha et al. (2023)",
+            "paper": "https://github.com/haruspeks/narratives-detection",
+            "location_of_input": "replace"
+        },
+        {
+            "name": "extract entities",
+            "prompt": [
+                "Extract the important entities mentioned in the text below. First extract all country names, then extract all organizations, then extract all people names, then extract specific topics which fit the content and finally extract general overarching themes",
+                "",
+                "Desired format:",
+                "Country names: <comma_separated_list_of_country_names>",
+                "Organization names: <comma_separated_list_of_organization_names>",
+                "People names: -||-",
+                "Specific topics: -||-",
+                "General themes: -||-",
+                "",
+                "Text: {user_input}"
+            ],
+            "authors": "OpenAI (2023)",
+            "paper": "https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api",
             "location_of_input": "replace"
         },
         {
