@@ -13,5 +13,7 @@ scipy
 
 einops
 xformers
+<<<<<<< HEAD
 
 ai2-olmo
+sentencepiece
