@@ -3,6 +3,7 @@ streamlit-ext
 python_dotenv
 langchain
 openai
+langchain-anthropic
 
 tiktoken
 transformers
@@ -13,7 +14,6 @@ scipy
 
 einops
 xformers
-<<<<<<< HEAD
 
 ai2-olmo
 sentencepiece

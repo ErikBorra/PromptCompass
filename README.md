@@ -25,7 +25,7 @@ pip install -r requirements.txt
 `cp .env.example .env`
 And enter your open_ai_key
 
-To use the llama-2 models, you first need to apply for access to the llama-2 models via e.g. https://huggingface.co/meta-llama/Llama-2-7b-chat-hf Once accepted, get a hugging face auth token https://huggingface.co/settings/tokens and then run `huggingface-cli login` on the command line, filling in the generated token.
+To use the llama-2 and llama-3 models, you first need to apply for access to these via e.g. https://huggingface.co/meta-llama/Llama-2-7b-chat-hf Once accepted, get a hugging face auth token https://huggingface.co/settings/tokens and then run `huggingface-cli login` on the command line, filling in the generated token. For Google's Gemma models you will have to follow a similar approach.
 
 ## Run
 `streamlit run PromptCompass.py`

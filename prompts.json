@@ -9,6 +9,14 @@
             "resource": "https://huggingface.co/google/flan-t5-xl"
         },
         {
+            "name": "google/gemma-2b-it",
+            "resource": "https://huggingface.co/google/gemma-2b-it"
+        },
+        {
+            "name": "google/gemma-7b-it",
+            "resource": "https://huggingface.co/google/gemma-7b-it"
+        },
+        {
             "name": "allenai/OLMo-7B",
             "resource": "https://huggingface.co/allenai/OLMo-7B"
         },
@@ -31,6 +39,22 @@
         {
             "name": "meta-llama/Llama-2-13b-chat-hf",
             "resource": "https://huggingface.co/meta-llama/Llama-2-13b-chat-hf"
+        },
+        {
+            "name": "meta-llama/Meta-Llama-3-8B",
+            "resource": "https://huggingface.co/meta-llama/Meta-Llama-3-8B"
+        },
+        {
+            "name": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "resource": "https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct"
+        },
+        {
+            "name": "meta-llama/Meta-Llama-3.1-8B",
+            "resource": "https://huggingface.co/meta-llama/Meta-Llama-3.1-8B"
+        },
+        {
+            "name": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+            "resource": "https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct"
         },
         {
             "name": "bigscience/bloomz-7b1",
@@ -61,35 +85,23 @@
             "resource": "https://huggingface.co/databricks/dolly-v2-3b"
         },
         {
-            "name": "gpt-4-0125-preview",
-            "resource": "https://platform.openai.com/docs/models/gpt-4"
+            "name": "gpt-4o",
+            "resource": "https://platform.openai.com/docs/models/gpt-4o"
         },
         {
-            "name": "gpt-4-1106-preview",
-            "resource": "https://platform.openai.com/docs/models/gpt-4"
+            "name": "gpt-4o-mini",
+            "resource": "https://platform.openai.com/docs/models/gpt-4o-mini"
         },
         {
             "name": "gpt-4",
             "resource": "https://platform.openai.com/docs/models/gpt-4"
         },
         {
-            "name": "gpt-4-32k",
+            "name": "gpt-4-turbo",
             "resource": "https://platform.openai.com/docs/models/gpt-4"
         },
         {
-            "name": "gpt-3.5-turbo-0125",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
-        },
-	{
-            "name": "gpt-3.5-turbo-1106",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
-        },
-        {
             "name": "gpt-3.5-turbo",
-            "resource": "https://platform.openai.com/docs/models/gpt-3-5"
-        },
-        {
-            "name": "gpt-3.5-turbo-16k",
             "resource": "https://platform.openai.com/docs/models/gpt-3-5"
         },
         {
@@ -103,6 +115,22 @@
         {
             "name": "davinci-002",
             "resource": "https://platform.openai.com/docs/models/gpt-base"
+        },
+        {
+            "name": "claude-3-5-sonnet-20240620",
+            "resource": "https://docs.anthropic.com/en/docs/about-claude/models"
+        },
+        {
+            "name": "claude-3-opus-20240229",
+            "resource": "https://docs.anthropic.com/en/docs/about-claude/models"
+        },
+        {
+            "name": "claude-3-sonnet-20240229",
+            "resource": "https://docs.anthropic.com/en/docs/about-claude/models"
+        },
+        {
+            "name": "claude-3-haiku-20240307",
+            "resource": "https://docs.anthropic.com/en/docs/about-claude/models"
         }
     ],
     "tasks": [

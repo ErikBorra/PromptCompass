@@ -12,6 +12,7 @@ from langchain.chat_models import ChatOpenAI  # import OpenAI chat model
 from langchain.callbacks import get_openai_callback  # import OpenAI callbacks
 from langchain.prompts import PromptTemplate  # import PromptTemplate
 from langchain.llms import HuggingFacePipeline  # import HuggingFacePipeline
+from langchain_anthropic import ChatAnthropic  # import Anthropic model
 import torch  # import torch
 # pip install git+https://github.com/huggingface/transformers
 from transformers import AutoTokenizer, pipeline, AutoModelForSeq2SeqLM, AutoModelForCausalLM, StoppingCriteria, StoppingCriteriaList
@@ -22,6 +23,7 @@ def main():
 
     pipe = None
     open_ai_key = None
+    claude_api_key = None
     uploaded_file = None
 
     # import css tasks and prompts
@@ -64,12 +66,20 @@ def main():
         f". {input_values['model']['comment']}" if 'comment' in input_values['model'] else ""))
 
     # ask for open ai key if no key is set in .env
-    if input_values['model']['resource'] in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4"]:
+    if input_values['model']['resource'] in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4", "https://platform.openai.com/docs/models/gpt-4o", "https://platform.openai.com/docs/models/gpt-4o-mini"]:
         # Load the OpenAI API key from the environment variable
         if os.getenv("OPENAI_API_KEY") is None or os.getenv("OPENAI_API_KEY") == "":
-            open_ai_key = st.text_input("Open AI API Key", "")
+            open_ai_key = st.text_input("OpenAI API Key", "")
         else:
             open_ai_key = os.getenv("OPENAI_API_KEY")
+
+    # ask for open claude key if no key is set in .env
+    if input_values['model']['resource'] in ["https://docs.anthropic.com/en/docs/about-claude/models"]:
+        # Load the Claude API key from the environment variable
+        if os.getenv("CLAUDE_API_KEY") is None or os.getenv("CLAUDE_API_KEY") == "":
+            claude_api_key = st.text_input("Claude API Key", "")
+        else:
+            claude_api_key = os.getenv("CLAUDE_API_KEY")
 
     # set default values
     do_sample = False
@@ -77,7 +87,7 @@ def main():
     top_p = -1
     max_new_tokens = -1
     with st.expander("Advanced settings"):
-        if input_values['model']['resource'] not in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4"]:
+        if input_values['model']['resource'] not in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4", "https://platform.openai.com/docs/models/gpt-4o", "https://platform.openai.com/docs/models/gpt-4o-mini"]:
             st.markdown(
                 """
             **Set Maximum Length**: Determines the maximum number of tokens of the **generated** text. A token is approximately four characters word, although this depends on the model.
@@ -88,7 +98,7 @@ def main():
                 'Maximum Length', value=256, min_value=-1, step=1)
             st.markdown(
                 """
-            **Set do_sample**: This controls how the model generates text. If do_sample=True, the model will use a probabilistic approach to generate text, where the likelihood of each word being chosen depends on its predicted probability. Use the below parameters to further control its behavior. If do_sample=False, the model will use a deterministic approach and always choose the most likely next word. 
+            **Set do_sample**: This controls how the model generates text. If do_sample=True, the model will use a probabilistic approach to generate text, where the likelihood of each word being chosen depends on its predicted probability. Use the below parameters to further control its behavior. If do_sample=False, the model will use a deterministic approach and always choose the most likely next word.
             """
             )
             do_sample = st.radio(
@@ -108,7 +118,7 @@ def main():
         st.markdown(
             """
         **Top P**: Also known as "nucleus sampling", is an alternative to temperature that can also be used to control the randomness of the model's responses.
-        It essentially trims the less likely options in the model's distribution of possible responses. Possible values lie between 0.0 and 1.0. 
+        It essentially trims the less likely options in the model's distribution of possible responses. Possible values lie between 0.0 and 1.0.
         A value of -1 means the parameter will not be specified. Only applies if do_sample=True.
         """
         )
@@ -120,7 +130,7 @@ def main():
     # set model kwargs
     model_kwargs = {}
 
-    if input_values['model']['resource'] not in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4"]:
+    if input_values['model']['resource'] not in ["https://platform.openai.com/docs/models/gpt-3-5", "https://platform.openai.com/docs/models/gpt-4", "https://platform.openai.com/docs/models/gpt-4o", "https://platform.openai.com/docs/models/gpt-4o-mini", "https://docs.anthropic.com/en/docs/about-claude/models"]:
         # check if max_new_tokens is at least 1 or -1
         if not (max_new_tokens > 0 or max_new_tokens == -1):
             st.error(
@@ -263,13 +273,32 @@ def main():
 
                                 # set up and run the model
                                 model_id = input_values['model']['name']
-                                if model_id in ['gpt-3.5-turbo-0125', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-0125-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-32k', 'gpt-3.5-turbo-instruct', 'babbage-002', 'davinci-002']:
+                                if model_id in ["claude-3-5-sonnet-20240620", "claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]:
+                                    if claude_api_key is None or claude_api_key == "":
+                                        st.error(
+                                            "Please provide a Claude API Key")
+                                        exit(1)
+                                    if model_id in ["claude-3-5-sonnet-20240620", "claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]:
+                                        llm = ChatAnthropic(
+                                            model=model_id, api_key=claude_api_key, **model_kwargs)
+
+                                        AIMessage = llm.invoke(prompt_template.format(
+                                            user_input=user_input))
+                                        output = AIMessage.content
+                                        num_completion_tokens = AIMessage.usage_metadata[
+                                            'output_tokens']
+                                        num_prompt_tokens = AIMessage.usage_metadata['input_tokens']
+
+                                        st.success("Input:  " + user_input + "  \n\n " +
+                                                   "Output: " + output)
+
+                                elif model_id in ['gpt-3.5-turbo', "gpt-3.5-turbo-instruct", 'gpt-4', 'gpt-4-turbo', "gpt-4o-mini", "gpt-4o", 'babbage-002', 'davinci-002']:
                                     if open_ai_key is None or open_ai_key == "":
                                         st.error(
                                             "Please provide an Open AI API Key")
                                         exit(1)
                                     with get_openai_callback() as cb:
-                                        if model_id in ['gpt-3.5-turbo-0125', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-0125-preview', 'gpt-4-1106-preview', 'gpt-4', 'gpt-4-32k']:
+                                        if model_id in ['gpt-3.5-turbo', "gpt-3.5-turbo-instruct", 'gpt-4', 'gpt-4-turbo', "gpt-4o-mini", "gpt-4o"]:
                                             llm = ChatOpenAI(
                                                 model=model_id, openai_api_key=open_ai_key, **model_kwargs)
                                         else:
@@ -288,16 +317,16 @@ def main():
                                         num_completion_tokens = cb.completion_tokens
                                         cost = cb.total_cost
 
-                                elif model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
+                                elif model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf', 'meta-llama/Meta-Llama-3-8B', 'meta-llama/Meta-Llama-3.1-8B', 'meta-llama/Meta-Llama-3-8B-Instruct', 'meta-llama/Meta-Llama-3.1-8B-Instruct']:
                                     if pipe == None:
                                         with st.status('Loading model %s' % model_id) as status:
                                             # to use the llama-2 models,
                                             # you first need to get access to the llama-2 models via e.g. https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
                                             # once accepted, get a hugging face auth token https://huggingface.co/settings/tokens
                                             # and then run `huggingface-cli login` on the command line, filling in the generated token
-                                            if model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf']:
+                                            if model_id in ['meta-llama/Llama-2-7b-chat-hf', 'meta-llama/Llama-2-13b-chat-hf', 'meta-llama/Meta-Llama-3-8B', 'meta-llama/Meta-Llama-3.1-8B', 'meta-llama/Meta-Llama-3-8B-Instruct', 'meta-llama/Meta-Llama-3.1-8B-Instruct']:
                                                 tokenizer = AutoTokenizer.from_pretrained(
-                                                    model_id, use_auth_token=True)
+                                                    model_id, token=True)
                                             else:
                                                 tokenizer = AutoTokenizer.from_pretrained(
                                                     model_id)
@@ -340,7 +369,7 @@ def main():
 
                                     st.success("Input:  " + user_input + "  \n\n " +
                                                "Output: " + output)
-                                elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct', 'databricks/dolly-v2-3b', 'databricks/dolly-v2-7b']:
+                                elif model_id in ['google/flan-t5-large', 'google/flan-t5-xl', 'google/gemma-2b-it', 'google/gemma-7b-it', 'tiiuae/falcon-7b-instruct', 'tiiuae/falcon-40b-instruct', 'databricks/dolly-v2-3b', 'databricks/dolly-v2-7b']:
                                     if pipe is None:
                                         with st.status('Loading model %s' % model_id) as status:
                                             tokenizer = AutoTokenizer.from_pretrained(
